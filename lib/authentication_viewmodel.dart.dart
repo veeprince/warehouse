@@ -52,7 +52,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             children: [
               SignInButton(
                 Buttons.Google,
-                onPressed: () => authBloc.loginGoogle(),
+                onPressed: () => authBloc.signInwithGoogle(),
               ),
               const SizedBox(
                 height: 205,

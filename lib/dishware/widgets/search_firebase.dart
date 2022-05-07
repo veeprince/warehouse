@@ -66,15 +66,23 @@ class SearchFirebaseState extends State<SearchFirebase> {
               ),
               filter: (produce) => [
                 produce.name,
-                produce.quantity.toString(),
+                produce.quantity,
                 produce.color,
                 produce.size,
                 produce.imageUrl
               ],
 
               builder: (product) => ListTile(
-                title: Text(product.name),
-                subtitle: Text(product.quantity.toString()),
+                title: Container(
+                  width: 300.0,
+                  height: 300.0,
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.horizontal(),
+                      image: DecorationImage(
+                          image: NetworkImage(product.imageUrl),
+                          fit: BoxFit.cover)),
+                ),
+                subtitle: Text(product.quantity),
                 trailing: Text(product.color),
                 onTap: () {
                   name = product.name;

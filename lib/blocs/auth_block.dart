@@ -8,24 +8,44 @@ class AuthBloc {
   final googleSignin = GoogleSignIn(scopes: ['email']);
 
   Stream<User?> get currentUser => authService.currentUser;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  loginGoogle() async {
+  Future<String?> signInwithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await googleSignin.signIn();
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser!.authentication;
+      final GoogleSignInAccount? googleSignInAccount =
+          await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
-          idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-
-      //Firebase Sign in
-      final result = await authService.signInWithCredential(credential);
-
-      // ignore: avoid_print
-      print('${result.user!.displayName}');
-    } catch (error) {
-      return (error);
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+      await _auth.signInWithCredential(credential);
+    } on FirebaseAuthException {
+      // print(e.message);
+      rethrow;
     }
+    return null;
   }
+
+  // loginGoogle() async {
+  //   try {
+  //     final GoogleSignInAccount? googleUser = await googleSignin.signIn();
+  //     final GoogleSignInAuthentication googleAuth =
+  //         await googleUser!.authentication;
+  //     final AuthCredential credential = GoogleAuthProvider.credential(
+  //         idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
+
+  //     //Firebase Sign in
+  //     final result = await authService.signInWithCredential(credential);
+
+  //     // ignore: avoid_print
+  //     print('${result.user!.displayName}');
+  //   } catch (error) {
+  //     return (error);
+  //   }
+  // }
 
   logout() {
     authService.logout();

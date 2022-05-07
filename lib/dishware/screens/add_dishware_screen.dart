@@ -74,7 +74,10 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
     setState(() {
       inProcess = true;
     });
-    final imageFile = await picker.pickImage(source: ImageSource.camera);
+    final imageFile = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 85,
+    );
     if (imageFile != null) {
       _image = File(imageFile.path);
     }

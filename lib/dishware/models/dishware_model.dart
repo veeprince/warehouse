@@ -1,10 +1,9 @@
 class Dishware {
-  final String name, color, productPosition, imageUrl, size;
-  final int quantity;
+  final String name, color, productPosition, imageUrl, size, quantity;
 
   Dishware(
       {this.name = "",
-      this.quantity = 0,
+      this.quantity = "",
       this.color = "",
       this.productPosition = "",
       this.imageUrl = "",

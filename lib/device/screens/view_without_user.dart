@@ -28,30 +28,30 @@ class ListWithoutUser extends StatefulWidget {
 }
 
 class _ListWithoutUserState extends State<ListWithoutUser> {
-  Future sendEmail() async {
-    final user = await GoogleAuthApi.signIn();
-    if (user == null) {
-      print('Empty');
-      return;
-    }
-    ;
+  // Future sendEmail() async {
+  //   // final user = await GoogleAuthApi.signIn();
+  //   if (user == null) {
+  //     print('Empty');
+  //     return;
+  //   }
+  //   ;
 
-    final email = user.email;
-    final auth = await user.authentication;
-    final token = auth.accessToken!;
-    final smtpServer = gmailSaslXoauth2(email, token);
-    final message = Message()
-      ..from = Address(email, 'Bolu')
-      ..recipients = ['bolu.akinwande@thealineagroup.com']
-      ..subject = "Hello"
-      ..text = "Test";
-    try {
-      await send(message, smtpServer);
-      showSnackBar('Sent email successfully');
-    } on MailerException catch (e) {
-      print(e);
-    }
-  }
+  //   final email = user.email;
+  //   final auth = await user.authentication;
+  //   final token = auth.accessToken!;
+  //   final smtpServer = gmailSaslXoauth2(email, token);
+  //   final message = Message()
+  //     ..from = Address(email, 'Bolu')
+  //     ..recipients = ['bolu.akinwande@thealineagroup.com']
+  //     ..subject = "Hello"
+  //     ..text = "Test";
+  //   try {
+  //     await send(message, smtpServer);
+  //     showSnackBar('Sent email successfully');
+  //   } on MailerException catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   void showSnackBar(String text) {
     final snackBar = SnackBar(
@@ -174,7 +174,7 @@ class _ListWithoutUserState extends State<ListWithoutUser> {
             ),
             ElevatedButton(
                 onPressed: () async {
-                  await sendEmail();
+                  // await sendEmail();
                 },
                 child: const Text(
                   "REQUEST",
