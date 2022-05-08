@@ -1,13 +1,6 @@
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server/gmail.dart';
 import 'package:provider/provider.dart';
 import 'package:warehouse/blocs/auth_block.dart';
-import 'package:warehouse/blocs/google_auth_api.dart';
 import 'package:warehouse/common_widgets/slide_left.dart';
 import 'package:warehouse/common_widgets/slide_right.dart';
 import 'package:warehouse/device/screens/view_screen.dart';
@@ -57,7 +50,7 @@ class _ListWithoutUserState extends State<ListWithoutUser> {
     final snackBar = SnackBar(
       content: Text(
         text,
-        style: TextStyle(fontSize: 20),
+        style: const TextStyle(fontSize: 20),
       ),
       backgroundColor: Colors.green,
     );
@@ -71,7 +64,7 @@ class _ListWithoutUserState extends State<ListWithoutUser> {
 
     authBloc.currentUser.forEach((element) {
       username = element!.email!;
-      print(username);
+      // print(username);
     });
     // print(username);
     return Container(

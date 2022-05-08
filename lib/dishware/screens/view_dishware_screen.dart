@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:warehouse/common_widgets/sizedbox_widget.dart';
 import 'package:warehouse/common_widgets/text_widget.dart';
@@ -65,16 +66,12 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
                 width: double.infinity,
                 height: 280,
                 alignment: Alignment.center,
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-
-                    return const LinearProgressIndicator();
-                  },
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.error),
+                child: CachedNetworkImage(
+                  fit: BoxFit.contain,
+                  imageUrl: widget.checkList!.imageUrl,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      LinearProgressIndicator(value: downloadProgress.progress),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
             ),

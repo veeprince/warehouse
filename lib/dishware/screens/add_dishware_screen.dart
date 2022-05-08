@@ -75,9 +75,10 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
       inProcess = true;
     });
     final imageFile = await picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 85,
-    );
+        source: ImageSource.camera,
+        imageQuality: 50,
+        maxWidth: 1024,
+        maxHeight: 1024);
     if (imageFile != null) {
       _image = File(imageFile.path);
     }
@@ -271,7 +272,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                     if (_image == null) {
                       await DishwareDatabaseHelper.updateDishwareChecklist(
                         name: nameController.text,
-                        quantity: int.parse(quantityController.text),
+                        quantity: quantityController.text,
                         color: colorController.text,
                         size: sizeController.text,
                         productPosition: productPositionController.text,
@@ -304,26 +305,25 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                                 .delete();
                           }
                         }
-                      }).whenComplete(() =>
-                              uploadToFirestore().then((value) async {
-                                await DishwareDatabaseHelper
-                                    .updateDishwareChecklistImage(
-                                        name: nameController.text,
-                                        quantity:
-                                            int.parse(quantityController.text),
-                                        size: sizeController.text,
-                                        color: colorController.text,
-                                        productPosition:
-                                            productPositionController.text,
-                                        docId: widget.docId!,
-                                        imageUrl: downloadedURL);
-                              }));
+                      }).whenComplete(
+                              () => uploadToFirestore().then((value) async {
+                                    await DishwareDatabaseHelper
+                                        .updateDishwareChecklistImage(
+                                            name: nameController.text,
+                                            quantity: quantityController.text,
+                                            size: sizeController.text,
+                                            color: colorController.text,
+                                            productPosition:
+                                                productPositionController.text,
+                                            docId: widget.docId!,
+                                            imageUrl: downloadedURL);
+                                  }));
                     }
                   } else {
                     uploadToFirestore().then((value) async {
                       await DishwareDatabaseHelper.addDishwareCheckList(
                         name: nameController.text,
-                        quantity: int.parse(quantityController.text),
+                        quantity: quantityController.text,
                         size: sizeController.text,
                         color: colorController.text,
                         productPosition: productPositionController.text,

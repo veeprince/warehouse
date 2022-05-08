@@ -1,12 +1,10 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:provider/provider.dart';
 import 'package:warehouse/blocs/auth_block.dart';
-import 'package:warehouse/rootApp.dart';
+import 'package:warehouse/dishware/screens/dishware_home.dart';
 
 class AuthenticationScreen extends StatefulWidget {
   const AuthenticationScreen({Key? key}) : super(key: key);
@@ -24,7 +22,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       if (fbUser != null) {
         // print(fbUser);
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => const RootApp(),
+          builder: (BuildContext context) => const DishwareHomePage(),
         ));
       }
     });

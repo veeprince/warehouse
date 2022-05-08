@@ -8,7 +8,7 @@ class DishwareDatabaseHelper {
 
   static Future<void> addDishwareCheckList(
       {required String name,
-      required int quantity,
+      required String quantity,
       required String color,
       required String productPosition,
       required String imageUrl,
@@ -34,7 +34,7 @@ class DishwareDatabaseHelper {
   // var check2;
   static Future<void> updateDishwareChecklist({
     String? name,
-    int? quantity,
+    String? quantity,
     String? color,
     String? size,
     String? productPosition,
@@ -59,7 +59,7 @@ class DishwareDatabaseHelper {
 
   static Future<void> updateDishwareChecklistImage({
     String? name,
-    int? quantity,
+    String? quantity,
     String? color,
     String? productPosition,
     String? imageUrl,

@@ -49,43 +49,52 @@ class DishwareHomePageState extends State<DishwareHomePage>
         ),
         body: DelayedDisplay(
           delay: const Duration(seconds: 1),
-          child: Center(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: DishwareDatabaseHelper.getDishwareChecklist(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const Text('Something went wrong');
-                } else if (snapshot.hasData || snapshot.data != null) {
-                  if (snapshot.data!.docs.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        "No data found",
-                        style: TextStyle(fontSize: 20),
-                      ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 10, 15),
+            child: Center(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: DishwareDatabaseHelper.getDishwareChecklist(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text('Something went wrong');
+                  } else if (snapshot.hasData || snapshot.data != null) {
+                    if (snapshot.data!.docs.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          "No data found",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      );
+                    }
+
+                    return GridView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        var checklistData = snapshot.data!.docs[index].data()!;
+
+                        String docId = snapshot.data!.docs[index].id;
+
+                        final DishwareCheckList checkList =
+                            DishwareCheckList.fromJSON(
+                                checklistData as Map<String, dynamic>);
+                        // print(checkList);
+
+                        // print(snapshot.data!.docs[index].data());
+                        return ListDishwareItem(checkList, docId);
+                      },
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 300,
+                              childAspectRatio: 2 / 2,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10),
                     );
                   }
-
-                  return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      var checklistData = snapshot.data!.docs[index].data()!;
-
-                      String docId = snapshot.data!.docs[index].id;
-
-                      final DishwareCheckList checkList =
-                          DishwareCheckList.fromJSON(
-                              checklistData as Map<String, dynamic>);
-                      // print(checkList);
-
-                      // print(snapshot.data!.docs[index].data());
-                      return ListDishwareItem(checkList, docId);
-                    },
+                  return const Center(
+                    child: CircularProgressIndicator(),
                   );
-                }
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
+                },
+              ),
             ),
           ),
         ),

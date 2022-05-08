@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class SearchFirebase extends StatefulWidget {
 class SearchFirebaseState extends State<SearchFirebase> {
   var productId = '';
   var name = '';
-
+  bool isPressed = false;
   static List<Dishware> produce = [];
   @override
   void initState() {
@@ -72,170 +73,199 @@ class SearchFirebaseState extends State<SearchFirebase> {
                 produce.imageUrl
               ],
 
-              builder: (product) => ListTile(
-                title: Container(
-                  width: 300.0,
-                  height: 300.0,
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.horizontal(),
-                      image: DecorationImage(
-                          image: NetworkImage(product.imageUrl),
-                          fit: BoxFit.cover)),
-                ),
-                subtitle: Text(product.quantity),
-                trailing: Text(product.color),
-                onTap: () {
-                  name = product.name;
-                  showModalBottomSheet(
-                    enableDrag: true,
-                    isDismissible: true,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24),
-                      ),
+              builder: (product) => Stack(children: [
+                ListTile(
+                  title: Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                        color: const Color.fromARGB(31, 0, 0, 0),
+                        borderRadius: BorderRadius.circular(15)),
+                    child: CachedNetworkImage(
+                      fit: BoxFit.scaleDown,
+                      imageUrl: product.imageUrl,
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) =>
+                              LinearProgressIndicator(
+                                  value: downloadProgress.progress),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
-                    context: context,
-                    builder: (context) => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        ListTile(
-                            leading: const Icon(Icons.open_in_full),
-                            title: const Text('View'),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Scaffold(
-                                      appBar: AppBar(
-                                        title: const Text("SearchPage"),
-                                      ),
-                                      body: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SingleChildScrollView(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Container(
-                                                width: 300.0,
-                                                height: 300.0,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        const BorderRadius
-                                                            .horizontal(),
-                                                    image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            product.imageUrl),
-                                                        fit: BoxFit.cover)),
-                                              ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              const TextWidget(
-                                                  text: 'Dishware Name'),
-                                              const SizedBox(height: 10.0),
-                                              ContainerWidget(
-                                                  text: product.name),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              const TextWidget(
-                                                  text: 'Dishware Quantity'),
-                                              const SizedBox(height: 10.0),
-                                              ContainerWidget(
-                                                  text: product.quantity
-                                                      .toString()),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              const TextWidget(
-                                                  text: 'Dishware Color'),
-                                              const SizedBox(height: 10.0),
-                                              ContainerWidget(
-                                                  text: product.color),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              const TextWidget(
-                                                  text:
-                                                      'Position In Warehouse'),
-                                              const SizedBox(height: 10.0),
-                                              ContainerWidget(
-                                                  text:
-                                                      product.productPosition),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                            ],
+                  ),
+                  subtitle: Center(
+                      child: Text(
+                    product.quantity,
+                    style: const TextStyle(fontSize: 20),
+                  )),
+                  onTap: () {
+                    name = product.name;
+                    showModalBottomSheet(
+                      enableDrag: true,
+                      isDismissible: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24),
+                        ),
+                      ),
+                      context: context,
+                      builder: (context) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ListTile(
+                              leading: const Icon(Icons.open_in_full),
+                              title: const Text('View'),
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Scaffold(
+                                        appBar: AppBar(
+                                          title: const Text("SearchPage"),
+                                        ),
+                                        body: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Container(
+                                                  width: 300.0,
+                                                  height: 300.0,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .horizontal(),
+                                                      image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              product.imageUrl),
+                                                          fit: BoxFit.cover)),
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                const TextWidget(
+                                                    text: 'Dishware Name'),
+                                                const SizedBox(height: 10.0),
+                                                ContainerWidget(
+                                                    text: product.name),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                const TextWidget(
+                                                    text: 'Dishware Quantity'),
+                                                const SizedBox(height: 10.0),
+                                                ContainerWidget(
+                                                    text: product.quantity
+                                                        .toString()),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                const TextWidget(
+                                                    text: 'Dishware Color'),
+                                                const SizedBox(height: 10.0),
+                                                ContainerWidget(
+                                                    text: product.color),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                const TextWidget(
+                                                    text:
+                                                        'Position In Warehouse'),
+                                                const SizedBox(height: 10.0),
+                                                ContainerWidget(
+                                                    text: product
+                                                        .productPosition),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ));
-                            }),
-                        const Padding(
-                            padding: EdgeInsets.all(20.0),
-                            child: DishwareFormField()),
-                        ListTile(
-                            leading: const Icon(Icons.delete),
-                            title: const Text('Delete'),
-                            onTap: () {
-                              // ignore: prefer_typing_uninitialized_variables
-                              var imageId;
-                              FirebaseFirestore.instance
-                                  .collection("Dishware")
-                                  .where("name", isEqualTo: product.name)
-                                  .get()
-                                  .then((value) {
-                                for (var element in value.docs) {
-                                  FirebaseFirestore.instance
-                                      .collection("Dishware")
-                                      .doc(element.id);
-                                  productId = element.id;
-                                }
-                              }).whenComplete(() {
+                                    ));
+                              }),
+                          const Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: DishwareFormField()),
+                          ListTile(
+                              leading: const Icon(Icons.delete),
+                              title: const Text('Delete'),
+                              onTap: () {
+                                // ignore: prefer_typing_uninitialized_variables
+                                var imageId;
                                 FirebaseFirestore.instance
                                     .collection("Dishware")
-                                    .doc(productId)
+                                    .where("name", isEqualTo: product.name)
                                     .get()
                                     .then((value) {
-                                  imageId = value.data()!["imageUrl"];
-                                });
-                              }).whenComplete(() {
-                                if (imageId == null) {
-                                  Timer.periodic(
-                                      const Duration(microseconds: 1), (timer) {
-                                    if (imageId != null) {
-                                      timer.cancel();
-                                      FirebaseStorage.instance
-                                          .refFromURL(imageId)
-                                          .delete();
-                                      DishwareDatabaseHelper.deleteChecklist(
-                                          docId: productId);
-                                    }
+                                  for (var element in value.docs) {
+                                    FirebaseFirestore.instance
+                                        .collection("Dishware")
+                                        .doc(element.id);
+                                    productId = element.id;
+                                  }
+                                }).whenComplete(() {
+                                  FirebaseFirestore.instance
+                                      .collection("Dishware")
+                                      .doc(productId)
+                                      .get()
+                                      .then((value) {
+                                    imageId = value.data()!["imageUrl"];
                                   });
-                                }
-                              }).whenComplete(() {
-                                Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const DishwareHomePage(),
-                                    ),
-                                    (route) => route.isFirst);
-                              });
-                            }),
-                        const SizedBox(
-                          height: 20.0,
-                        )
-                      ],
-                    ),
-                  );
-                },
-              ),
+                                }).whenComplete(() {
+                                  if (imageId == null) {
+                                    Timer.periodic(
+                                        const Duration(microseconds: 1),
+                                        (timer) {
+                                      if (imageId != null) {
+                                        timer.cancel();
+                                        FirebaseStorage.instance
+                                            .refFromURL(imageId)
+                                            .delete();
+                                        DishwareDatabaseHelper.deleteChecklist(
+                                            docId: productId);
+                                      }
+                                    });
+                                  }
+                                }).whenComplete(() {
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const DishwareHomePage(),
+                                      ),
+                                      (route) => route.isFirst);
+                                });
+                              }),
+                          const SizedBox(
+                            height: 20.0,
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                // Align(
+                //   alignment: const Alignment(0.5, 0.6),
+                //   child: IconButton(
+                //       icon: isPressed
+                //           ? Icon(Icons.favorite_border)
+                //           : Icon(
+                //               Icons.favorite,
+                //             ),
+                //       onPressed: () {
+                //         setState(() {
+                //           // Here we changing the icon.
+                //           isPressed = !isPressed;
+                //         });
+                //       }),
+                // ),
+              ]),
             ),
             query: searchString,
           );
