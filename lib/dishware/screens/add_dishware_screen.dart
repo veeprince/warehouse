@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:select_form_field/select_form_field.dart';
+import 'package:textfield_tags/textfield_tags.dart';
 import 'package:warehouse/common_widgets/text_widget.dart';
 import 'package:warehouse/common_widgets/textfield_widget.dart';
 import 'package:warehouse/dishware/models/dishware_checklist_model.dart';
@@ -33,6 +34,9 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
   TextEditingController productPositionController = TextEditingController();
   TextEditingController typeController = TextEditingController();
   TextEditingController sizeController = TextEditingController();
+  late TextfieldTagsController controller;
+  late double _distanceToField;
+
   late String imageUrl;
   late String type;
   // ignore: prefer_typing_uninitialized_variables
@@ -46,8 +50,17 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
       sizeController.text = widget.checkList!.size;
       productPositionController.text = widget.checkList!.productPosition;
       typeController.text = widget.checkList!.type;
+      controller.addTag = widget.checkList!.tags as String;
     }
+    controller = TextfieldTagsController();
+
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _distanceToField = MediaQuery.of(context).size.width;
   }
 
   // ignore: prefer_typing_uninitialized_variables
@@ -214,6 +227,128 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
               text: "Enter the dishware name",
               controller: nameController),
           const SizedBox(height: 10.0),
+          const TextWidget(text: 'Dishware Tags'),
+          TextFieldTags(
+            textfieldTagsController: controller,
+            // initialTags: const [
+            //   'pick',
+            //   'your',
+            //   'favorite',
+            //   'programming',
+            //   'language'
+            // ],
+            textSeparators: const [' ', ','],
+            letterCase: LetterCase.normal,
+            // validator: (String tag) {
+            //   if (tag == 'php') {
+            //     return 'No, please just no';
+            //   } else if (_controller.getTags!.contains(tag)) {
+            //     return 'you already entered that';
+            //   }
+            //   return null;
+            // },
+            inputfieldBuilder:
+                (context, tec, fn, error, onChanged, onSubmitted) {
+              return ((context, sc, tags, onTagDelete) {
+                return Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: TextField(
+                    controller: tec,
+                    focusNode: fn,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          width: 3.0,
+                        ),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 123, 123, 123),
+                          width: 1.0,
+                        ),
+                      ),
+                      helperText: 'Seperated by comma',
+                      helperStyle: const TextStyle(
+                        color: Color.fromARGB(255, 179, 179, 179),
+                      ),
+                      hintText:
+                          controller.hasTags ? '' : "Enter the dishware tags",
+                      errorText: error,
+                      prefixIconConstraints:
+                          BoxConstraints(maxWidth: _distanceToField * 0.74),
+                      prefixIcon: tags.isNotEmpty
+                          ? SingleChildScrollView(
+                              controller: sc,
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                  children: tags.map((String tag) {
+                                return Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(40.0),
+                                    ),
+                                    color: Color.fromARGB(255, 163, 163, 164),
+                                  ),
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0, vertical: 5.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      InkWell(
+                                        child: Text(
+                                          '#$tag',
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ),
+                                        onTap: () {
+                                          print("$tag selected");
+                                        },
+                                      ),
+                                      const SizedBox(width: 4.0),
+                                      InkWell(
+                                        child: const Icon(
+                                          Icons.cancel,
+                                          size: 14.0,
+                                          color: Color.fromARGB(
+                                              255, 233, 233, 233),
+                                        ),
+                                        onTap: () {
+                                          onTagDelete(tag);
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }).toList()),
+                            )
+                          : null,
+                    ),
+                    onChanged: onChanged,
+                    onSubmitted: onSubmitted,
+                  ),
+                );
+              });
+            },
+          ),
+          ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(
+                Color.fromARGB(255, 152, 152, 152),
+              ),
+            ),
+            onPressed: () {
+              controller.clearTags();
+            },
+            child: const Text('CLEAR TAGS'),
+          ),
+          const SizedBox(height: 10.0),
           const TextWidget(text: "Dishware Quantity"),
           const SizedBox(
             height: 10,
@@ -323,6 +458,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                     uploadToFirestore().then((value) async {
                       await DishwareDatabaseHelper.addDishwareCheckList(
                         name: nameController.text,
+                        tags: controller.getTags!,
                         quantity: quantityController.text,
                         size: sizeController.text,
                         color: colorController.text,
@@ -360,6 +496,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
     colorController.dispose();
     sizeController.dispose();
     productPositionController.dispose();
+    controller.dispose();
     super.dispose();
   }
 }

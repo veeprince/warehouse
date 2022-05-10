@@ -1,5 +1,6 @@
 class Dishware {
   final String name, color, productPosition, imageUrl, size, quantity;
+  List<String> tags;
 
   Dishware(
       {this.name = "",
@@ -7,5 +8,6 @@ class Dishware {
       this.color = "",
       this.productPosition = "",
       this.imageUrl = "",
-      this.size = ""});
+      this.size = "",
+      required this.tags});
 }

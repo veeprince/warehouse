@@ -9,12 +9,6 @@ class ContainerWidget extends StatelessWidget {
     return Container(
       height: 60.0,
       alignment: Alignment.center,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey,
-        ),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
       child: Center(
         child: Text(text),
       ),

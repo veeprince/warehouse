@@ -13,6 +13,7 @@ class DishwareDatabaseHelper {
       required String productPosition,
       required String imageUrl,
       required String type,
+      required List<String> tags,
       required String size}) async {
     DocumentReference documentReferencer = _collectionReference.doc();
 
@@ -23,7 +24,8 @@ class DishwareDatabaseHelper {
       "productPosition": productPosition,
       "imageUrl": imageUrl,
       "type": type,
-      "size": size
+      "size": size,
+      "tags": tags,
     };
 
     await documentReferencer.set(data);
@@ -38,6 +40,8 @@ class DishwareDatabaseHelper {
     String? color,
     String? size,
     String? productPosition,
+    List<String>? tags,
+
     // String? type,
     required String docId,
   }) async {
@@ -49,6 +53,7 @@ class DishwareDatabaseHelper {
       "color": color,
       "size": size,
       "productPosition": productPosition,
+      "tags": tags,
       // "type": type,
     };
 
@@ -64,6 +69,8 @@ class DishwareDatabaseHelper {
     String? productPosition,
     String? imageUrl,
     String? size,
+    List<String>? tags,
+
     // String? type,
     required String docId,
   }) async {
@@ -75,7 +82,8 @@ class DishwareDatabaseHelper {
       "color": color,
       "productPosition": productPosition,
       'imageUrl': imageUrl,
-      'size': size
+      'size': size,
+      "tags": tags,
     };
 
     await documentReferencer.update(data);

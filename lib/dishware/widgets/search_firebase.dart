@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:search_page/search_page.dart';
 import 'package:warehouse/common_widgets/container_widget.dart';
 import 'package:warehouse/common_widgets/text_widget.dart';
@@ -32,13 +33,13 @@ class SearchFirebaseState extends State<SearchFirebase> {
       for (var doc in querysnapshot.docs) {
         setState(() {
           produce.add(Dishware(
-            name: doc['name'],
-            quantity: doc["quantity"],
-            color: doc['color'],
-            size: doc['size'],
-            productPosition: doc['productPosition'],
-            imageUrl: doc['imageUrl'],
-          ));
+              name: doc['name'],
+              quantity: doc["quantity"],
+              color: doc['color'],
+              size: doc['size'],
+              productPosition: doc['productPosition'],
+              imageUrl: doc['imageUrl'],
+              tags: List.from(doc['tags'])));
         });
       }
     });
@@ -70,7 +71,8 @@ class SearchFirebaseState extends State<SearchFirebase> {
                 produce.quantity,
                 produce.color,
                 produce.size,
-                produce.imageUrl
+                produce.imageUrl,
+                produce.tags.join(),
               ],
 
               builder: (product) => Stack(children: [
@@ -153,33 +155,81 @@ class SearchFirebaseState extends State<SearchFirebase> {
                                                 const SizedBox(height: 10.0),
                                                 ContainerWidget(
                                                     text: product.name),
+                                                const Divider(
+                                                  color: Colors.grey,
+                                                ),
                                                 const SizedBox(
                                                   height: 10,
+                                                ),
+                                                const TextWidget(
+                                                    text: 'Dishware Tags'),
+                                                const SizedBox(height: 20.0),
+                                                SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  child: Row(
+                                                    children: product.tags
+                                                        .map((e) => Text(
+                                                              "$e ",
+                                                              style: GoogleFonts
+                                                                  .aBeeZee(
+                                                                color: const Color
+                                                                        .fromARGB(
+                                                                    255,
+                                                                    255,
+                                                                    252,
+                                                                    252),
+                                                                fontSize: 15.0,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ))
+                                                        .toList(),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  height: 30,
+                                                ),
+                                                const Divider(
+                                                  color: Colors.grey,
+                                                ),
+                                                const SizedBox(
+                                                  height: 20,
                                                 ),
                                                 const TextWidget(
                                                     text: 'Dishware Quantity'),
-                                                const SizedBox(height: 10.0),
+                                                const SizedBox(height: 5.0),
                                                 ContainerWidget(
                                                     text: product.quantity
                                                         .toString()),
+                                                const Divider(
+                                                  color: Colors.grey,
+                                                ),
                                                 const SizedBox(
-                                                  height: 10,
+                                                  height: 5,
                                                 ),
                                                 const TextWidget(
                                                     text: 'Dishware Color'),
-                                                const SizedBox(height: 10.0),
+                                                const SizedBox(height: 5.0),
                                                 ContainerWidget(
                                                     text: product.color),
                                                 const SizedBox(
-                                                  height: 10,
+                                                  height: 5,
+                                                ),
+                                                const Divider(
+                                                  color: Colors.grey,
                                                 ),
                                                 const TextWidget(
                                                     text:
                                                         'Position In Warehouse'),
-                                                const SizedBox(height: 10.0),
+                                                const SizedBox(height: 5.0),
                                                 ContainerWidget(
                                                     text: product
                                                         .productPosition),
+                                                const Divider(
+                                                  color: Colors.grey,
+                                                ),
                                                 const SizedBox(
                                                   height: 10,
                                                 ),

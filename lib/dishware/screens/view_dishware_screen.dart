@@ -2,6 +2,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:warehouse/common_widgets/sizedbox_widget.dart';
 import 'package:warehouse/common_widgets/text_widget.dart';
 
@@ -24,29 +25,49 @@ var uuid;
 
 class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
   late String name;
-  late int quantity;
+  late String quantity;
   late String position;
   late String color;
   late String size;
   late String type;
   late String imageUrl;
+  late List<String> tags;
+  List<Widget> textWidgetList = <Widget>[]; // Here we defined a list of widget!
+
   @override
   void initState() {
     if (widget.checkList != null) {
       name = widget.checkList!.name;
-      quantity = int.parse(widget.checkList!.quantity);
+      quantity = widget.checkList!.quantity;
       color = widget.checkList!.color;
       size = widget.checkList!.size;
       position = widget.checkList!.productPosition;
       imageUrl = widget.checkList!.imageUrl;
       type = widget.checkList!.type;
+      tags = widget.checkList!.tags;
     }
     super.initState();
   }
 
   var img;
+
   @override
   Widget build(BuildContext context) {
+    for (int i = 0; i < tags.length; i++) {
+      textWidgetList.add(
+        Text(
+          "${tags[i]}  ",
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          style: GoogleFonts.aBeeZee(
+            color: const Color.fromARGB(255, 255, 252, 252),
+            fontSize: 15.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("TAG"),
@@ -75,6 +96,14 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
                 ),
               ),
             ),
+            // Expanded(
+            //   child: ListView.builder(
+            //       itemCount: tags.length,
+            //       itemBuilder: (BuildContext ctxt, int index) {
+            //         return Text(tags[index]);
+            //       }),
+            // ),
+
             Column(
               children: [
                 const SizedBox(height: 10.0),
@@ -83,8 +112,20 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
                 SizedBoxWidget(text: name),
                 const SizedBox(height: 10.0),
                 const TextWidget(text: 'Quantity'),
+                SizedBoxWidget(text: quantity),
                 const SizedBox(height: 10.0),
-                SizedBoxWidget(text: quantity.toString()),
+                const TextWidget(text: 'Tags'),
+                const SizedBox(height: 10.0),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: textWidgetList,
+                  ),
+                ),
+                const SizedBox(height: 5.0),
+                const Divider(
+                  color: Colors.grey,
+                ),
                 const SizedBox(height: 10.0),
                 const TextWidget(text: 'Type'),
                 const SizedBox(height: 10.0),
