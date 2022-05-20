@@ -88,8 +88,8 @@ class SearchFirebaseState extends State<SearchFirebase> {
         });
   }
 
-  void showSnackBar(String text) {
-    final snackBar = SnackBar(
+  SnackBar showSnackBar(String text) {
+    return SnackBar(
       content: Text(
         text,
         style: const TextStyle(fontSize: 20),
@@ -409,16 +409,24 @@ class SearchFirebaseState extends State<SearchFirebase> {
                     );
                   },
                 ),
-                ElevatedButton(
-                    onPressed: () async {
-                      _displayTextInputDialog(context).whenComplete(() async =>
-                          await sendEmail(
-                              valueText, product.imageUrl, locationText));
-                    },
-                    child: const Text(
-                      "REQUEST",
-                      style: TextStyle(color: Colors.white),
-                    )),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color.fromARGB(255, 61, 61, 61),
+                        ),
+                      ),
+                      onPressed: () async {
+                        _displayTextInputDialog(context).whenComplete(
+                            () async => await sendEmail(
+                                valueText, product.imageUrl, locationText));
+                      },
+                      child: const Text(
+                        "REQUEST",
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ),
                 // Align(
                 //   alignment: const Alignment(0.8, 0.9),
                 //   child: FavoriteButton(

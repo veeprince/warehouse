@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:provider/provider.dart';
-import 'package:warehouse/authentication_viewmodel.dart.dart';
 import 'package:warehouse/blocs/auth_block.dart';
 
 class CustomAppBarWidget extends StatelessWidget {

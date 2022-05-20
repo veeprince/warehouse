@@ -293,6 +293,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                                               color: Colors.white),
                                         ),
                                         onTap: () {
+                                          // ignore: avoid_print
                                           print("$tag selected");
                                         },
                                       ),
@@ -325,7 +326,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
           ElevatedButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(
-                Color.fromARGB(255, 152, 152, 152),
+                const Color.fromARGB(255, 152, 152, 152),
               ),
             ),
             onPressed: () {
