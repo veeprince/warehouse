@@ -7,7 +7,7 @@ import 'package:warehouse/blocs/auth_block.dart';
 import 'package:warehouse/spashScreen.dart';
 
 void main() async {
-  await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: "data.env");
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
