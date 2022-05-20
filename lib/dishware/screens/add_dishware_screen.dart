@@ -230,23 +230,8 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
           const TextWidget(text: 'Dishware Tags'),
           TextFieldTags(
             textfieldTagsController: controller,
-            // initialTags: const [
-            //   'pick',
-            //   'your',
-            //   'favorite',
-            //   'programming',
-            //   'language'
-            // ],
             textSeparators: const [' ', ','],
             letterCase: LetterCase.normal,
-            // validator: (String tag) {
-            //   if (tag == 'php') {
-            //     return 'No, please just no';
-            //   } else if (_controller.getTags!.contains(tag)) {
-            //     return 'you already entered that';
-            //   }
-            //   return null;
-            // },
             inputfieldBuilder:
                 (context, tec, fn, error, onChanged, onSubmitted) {
               return ((context, sc, tags, onTagDelete) {

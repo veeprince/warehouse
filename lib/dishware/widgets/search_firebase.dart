@@ -4,13 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'package:search_page/search_page.dart';
+import 'package:warehouse/blocs/google_auth_api.dart';
 import 'package:warehouse/common_widgets/container_widget.dart';
 import 'package:warehouse/common_widgets/text_widget.dart';
 import 'package:warehouse/dishware/models/dishware_database_helper.dart';
 import 'package:warehouse/dishware/models/dishware_model.dart';
 import 'package:warehouse/dishware/screens/dishware_home.dart';
 import 'package:warehouse/dishware/widgets/selec_form_field.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SearchFirebase extends StatefulWidget {
   const SearchFirebase({Key? key}) : super(key: key);
@@ -20,10 +24,85 @@ class SearchFirebase extends StatefulWidget {
 }
 
 class SearchFirebaseState extends State<SearchFirebase> {
+  late String codeDialog;
+  late String valueText;
+  late String locationText;
+  TextEditingController textFieldController = TextEditingController();
+  TextEditingController locationTextFieldController = TextEditingController();
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Enter Quantity and Location'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      valueText = value;
+                    });
+                  },
+                  controller: textFieldController,
+                  decoration: const InputDecoration(hintText: "Quantity"),
+                ),
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      locationText = value;
+                    });
+                  },
+                  controller: locationTextFieldController,
+                  decoration:
+                      const InputDecoration(hintText: "Delivery Location"),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                // color: Colors.red,
+                // textColor: Colors.white,
+                child: const Text('CANCEL'),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+              TextButton(
+                // color: Colors.green,
+                // textColor: Colors.white,
+                child: const Text('REQUEST'),
+                onPressed: () {
+                  setState(() {
+                    codeDialog = valueText;
+                    Navigator.pop(context);
+                    textFieldController.clear();
+                    locationTextFieldController.clear();
+                  });
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void showSnackBar(String text) {
+    final snackBar = SnackBar(
+      content: Text(
+        text,
+        style: const TextStyle(fontSize: 20),
+      ),
+      backgroundColor: Colors.green,
+    );
+  }
+
   var productId = '';
   var name = '';
-  bool isPressed = false;
+  bool isFavourite = true;
   static List<Dishware> produce = [];
+
   @override
   void initState() {
     FirebaseFirestore.instance
@@ -44,6 +123,36 @@ class SearchFirebaseState extends State<SearchFirebase> {
       }
     });
     super.initState();
+  }
+
+  Future sendEmail(amount, url, location) async {
+    // GoogleAuthApi.signOut();
+    // return;
+    final user = await GoogleAuthApi.signIn();
+    // print(user);
+    if (user == null) return;
+
+    final email = user.email;
+    final auth = await user.authentication;
+    final token = auth.accessToken!;
+    GoogleAuthApi.signOut();
+
+    final smtpServer = gmailSaslXoauth2(email, token);
+    final message = Message()
+      ..from = Address(email, dotenv.env['NAME'])
+      ..recipients = [dotenv.env['EMAIL']]
+      ..subject = "Dishware Request"
+      ..html =
+          '<p>${user.displayName} would like $amount of this dishware delivered to $location.</p><img src="$url" width="500" height="600">'
+      ..text = "$amount amount";
+
+    try {
+      await send(message, smtpServer);
+      showSnackBar('Sent email successfully');
+    } on MailerException catch (e) {
+      // ignore: avoid_print
+      print(e);
+    }
   }
 
   String searchString = '';
@@ -300,20 +409,26 @@ class SearchFirebaseState extends State<SearchFirebase> {
                     );
                   },
                 ),
+                ElevatedButton(
+                    onPressed: () async {
+                      _displayTextInputDialog(context).whenComplete(() async =>
+                          await sendEmail(
+                              valueText, product.imageUrl, locationText));
+                    },
+                    child: const Text(
+                      "REQUEST",
+                      style: TextStyle(color: Colors.white),
+                    )),
                 // Align(
-                //   alignment: const Alignment(0.5, 0.6),
-                //   child: IconButton(
-                //       icon: isPressed
-                //           ? Icon(Icons.favorite_border)
-                //           : Icon(
-                //               Icons.favorite,
-                //             ),
-                //       onPressed: () {
-                //         setState(() {
-                //           // Here we changing the icon.
-                //           isPressed = !isPressed;
-                //         });
-                //       }),
+                //   alignment: const Alignment(0.8, 0.9),
+                //   child: FavoriteButton(
+                //     iconSize: 45,
+                //     isFavorite: false,
+                //     iconDisabledColor: Colors.white,
+                //     valueChanged: (_isFavorite) {
+                //       print('Is Favorite : $_isFavorite');
+                //     },
+                //   ),
                 // ),
               ]),
             ),
