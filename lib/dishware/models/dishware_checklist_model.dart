@@ -4,12 +4,11 @@ class DishwareCheckList {
   String color;
   String productPosition;
   String imageUrl;
-  String type;
   String size;
   List<String> tags;
 
   DishwareCheckList(this.name, this.quantity, this.color, this.productPosition,
-      this.imageUrl, this.type, this.size, this.tags);
+      this.imageUrl, this.size, this.tags);
 
   factory DishwareCheckList.fromJSON(Map<String, dynamic> json) {
     return DishwareCheckList(
@@ -18,7 +17,6 @@ class DishwareCheckList {
       json["color"],
       json["productPosition"],
       json["imageUrl"],
-      json["type"],
       json["size"],
       List.from(json['tags']),
     );
@@ -31,7 +29,6 @@ class DishwareCheckList {
       "color": color,
       "productPosition": productPosition,
       "imageUrl": imageUrl,
-      "type": type,
       "size": size,
       "tags": tags,
     };

@@ -12,7 +12,6 @@ class DishwareDatabaseHelper {
       required String color,
       required String productPosition,
       required String imageUrl,
-      required String type,
       required List<String> tags,
       required String size}) async {
     DocumentReference documentReferencer = _collectionReference.doc();
@@ -23,7 +22,6 @@ class DishwareDatabaseHelper {
       "color": color,
       "productPosition": productPosition,
       "imageUrl": imageUrl,
-      "type": type,
       "size": size,
       "tags": tags,
     };
@@ -41,12 +39,12 @@ class DishwareDatabaseHelper {
     String? size,
     String? productPosition,
     List<String>? tags,
-
-    // String? type,
     required String docId,
   }) async {
-    DocumentReference documentReferencer = _collectionReference.doc(docId);
+    print("update " + docId);
 
+    DocumentReference documentReferencer = _collectionReference.doc(docId);
+    // print(documentReferencer.id);
     Map<String, dynamic> data = <String, dynamic>{
       "name": name,
       "quantity": quantity,
@@ -54,12 +52,9 @@ class DishwareDatabaseHelper {
       "size": size,
       "productPosition": productPosition,
       "tags": tags,
-      // "type": type,
     };
 
-    await documentReferencer.update(data);
-    //       .whenComplete(() => print("Dishware Updated"))
-    //       .catchError((e) => print(e));
+    await documentReferencer.update(data).catchError((e) => print(e));
   }
 
   static Future<void> updateDishwareChecklistImage({
@@ -70,8 +65,6 @@ class DishwareDatabaseHelper {
     String? imageUrl,
     String? size,
     List<String>? tags,
-
-    // String? type,
     required String docId,
   }) async {
     DocumentReference documentReferencer = _collectionReference.doc(docId);

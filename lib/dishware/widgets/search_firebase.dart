@@ -10,25 +10,64 @@ import 'package:search_page/search_page.dart';
 import 'package:warehouse/blocs/google_auth_api.dart';
 import 'package:warehouse/common_widgets/container_widget.dart';
 import 'package:warehouse/common_widgets/text_widget.dart';
+import 'package:warehouse/dishware/models/dishware_checklist_model.dart';
 import 'package:warehouse/dishware/models/dishware_database_helper.dart';
 import 'package:warehouse/dishware/models/dishware_model.dart';
+import 'package:warehouse/dishware/screens/add_dishware_screen.dart';
 import 'package:warehouse/dishware/screens/dishware_home.dart';
-import 'package:warehouse/dishware/widgets/selec_form_field.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SearchFirebase extends StatefulWidget {
-  const SearchFirebase({Key? key}) : super(key: key);
+  final DishwareCheckList? checkList;
 
+  final String? docId;
+  const SearchFirebase({
+    Key? key,
+    this.checkList,
+    this.docId,
+  }) : super(key: key);
   @override
-  SearchFirebaseState createState() => SearchFirebaseState();
+  _SearchFirebaseState createState() => _SearchFirebaseState();
 }
 
-class SearchFirebaseState extends State<SearchFirebase> {
+class _SearchFirebaseState extends State<SearchFirebase> {
+  late String addName;
+
+  late String addQuantity;
+  late String addColor;
+  late String addSize;
   late String codeDialog;
-  late String valueText;
-  late String locationText;
+  String valueText = '';
+  String locationText = '';
+  dynamic tagGetter;
+  String docID = '';
+
   TextEditingController textFieldController = TextEditingController();
   TextEditingController locationTextFieldController = TextEditingController();
+
+  @override
+  void initState() {
+    FirebaseFirestore.instance
+        .collection("Dishware")
+        .get()
+        .then((QuerySnapshot querysnapshot) {
+      for (var doc in querysnapshot.docs) {
+        setState(() {
+          produce.add(Dishware(
+              name: doc['name'],
+              quantity: doc["quantity"],
+              color: doc['color'],
+              size: doc['size'],
+              productPosition: doc['productPosition'],
+              imageUrl: doc['imageUrl'],
+              tags: List.from(doc['tags'])));
+        });
+      }
+    });
+
+    super.initState();
+  }
+
   Future<void> _displayTextInputDialog(BuildContext context) async {
     return showDialog(
         context: context,
@@ -65,9 +104,11 @@ class SearchFirebaseState extends State<SearchFirebase> {
                 // textColor: Colors.white,
                 child: const Text('CANCEL'),
                 onPressed: () {
-                  setState(() {
-                    Navigator.pop(context);
-                  });
+                  Navigator.pop(context);
+                  // setState(() {
+                  //   valueText = '';
+                  //   Navigator.pop(context);
+                  // });
                 },
               ),
               TextButton(
@@ -102,28 +143,6 @@ class SearchFirebaseState extends State<SearchFirebase> {
   var name = '';
   bool isFavourite = true;
   static List<Dishware> produce = [];
-
-  @override
-  void initState() {
-    FirebaseFirestore.instance
-        .collection("Dishware")
-        .get()
-        .then((QuerySnapshot querysnapshot) {
-      for (var doc in querysnapshot.docs) {
-        setState(() {
-          produce.add(Dishware(
-              name: doc['name'],
-              quantity: doc["quantity"],
-              color: doc['color'],
-              size: doc['size'],
-              productPosition: doc['productPosition'],
-              imageUrl: doc['imageUrl'],
-              tags: List.from(doc['tags'])));
-        });
-      }
-    });
-    super.initState();
-  }
 
   Future sendEmail(amount, url, location) async {
     // GoogleAuthApi.signOut();
@@ -349,9 +368,42 @@ class SearchFirebaseState extends State<SearchFirebase> {
                                       ),
                                     ));
                               }),
-                          const Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: DishwareFormField()),
+                          ListTile(
+                              leading: const Icon(Icons.update),
+                              title: const Text('Update'),
+                              onTap: () {
+                                dynamic dishwareChecklist = DishwareCheckList(
+                                  product.name,
+                                  product.quantity,
+                                  product.color,
+                                  product.productPosition,
+                                  product.imageUrl,
+                                  product.size,
+                                  product.tags,
+                                );
+
+                                FirebaseFirestore.instance
+                                    .collection("Dishware")
+                                    .where("name", isEqualTo: product.name)
+                                    .get()
+                                    .then((value) {
+                                  for (var element in value.docs) {
+                                    setState(() {
+                                      docID = element.id;
+                                    });
+                                    FirebaseFirestore.instance
+                                        .collection("Dishware")
+                                        .doc(element.id);
+                                  }
+                                }).whenComplete(() => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddDishwareScreen(
+                                                    checkList:
+                                                        dishwareChecklist,
+                                                    docId: docID))));
+                              }),
                           ListTile(
                               leading: const Icon(Icons.delete),
                               title: const Text('Delete'),
@@ -418,9 +470,15 @@ class SearchFirebaseState extends State<SearchFirebase> {
                         ),
                       ),
                       onPressed: () async {
-                        _displayTextInputDialog(context).whenComplete(
-                            () async => await sendEmail(
-                                valueText, product.imageUrl, locationText));
+                        _displayTextInputDialog(context)
+                            .whenComplete(() async => {
+                                  if (valueText.isNotEmpty &&
+                                      locationText.isNotEmpty)
+                                    {
+                                      await sendEmail(valueText,
+                                          product.imageUrl, locationText)
+                                    }
+                                });
                       },
                       child: const Text(
                         "REQUEST",
@@ -454,4 +512,10 @@ class SearchFirebaseState extends State<SearchFirebase> {
   //     this.qrCode = qrCode;
   //   });
   // }
+}
+
+@override
+Widget build(BuildContext context) {
+  // TODO: implement build
+  throw UnimplementedError();
 }

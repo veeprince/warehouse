@@ -11,6 +11,7 @@ import 'package:warehouse/common_widgets/textfield_widget.dart';
 import 'package:warehouse/dishware/models/dishware_checklist_model.dart';
 import 'package:warehouse/dishware/models/dishware_database_helper.dart';
 import 'package:warehouse/dishware/models/types.dart';
+import 'package:warehouse/dishware/screens/view_dishware_screen.dart';
 
 class AddDishwareScreen extends StatefulWidget {
   final DishwareCheckList? checkList;
@@ -32,15 +33,18 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
   TextEditingController quantityController = TextEditingController();
   TextEditingController colorController = TextEditingController();
   TextEditingController productPositionController = TextEditingController();
-  TextEditingController typeController = TextEditingController();
   TextEditingController sizeController = TextEditingController();
-  late TextfieldTagsController controller;
+  TextfieldTagsController controller = TextfieldTagsController();
   late double _distanceToField;
 
   late String imageUrl;
-  late String type;
+  late List<String> tags;
+  List<Widget> textWidgetList = <Widget>[]; // Here we defined a list of widget!
+
   // ignore: prefer_typing_uninitialized_variables
   var imageId;
+  dynamic tagGetter;
+  late String docId;
   @override
   void initState() {
     if (widget.checkList != null) {
@@ -49,10 +53,14 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
       colorController.text = widget.checkList!.color;
       sizeController.text = widget.checkList!.size;
       productPositionController.text = widget.checkList!.productPosition;
-      typeController.text = widget.checkList!.type;
-      controller.addTag = widget.checkList!.tags as String;
+      tagGetter = widget.checkList!.tags;
+      docId = widget.docId!;
+      // print(controller.getTags);
+      // for (int i = 0; i < widget.checkList!.tags.length; i++) {
+      //   tags.add()
+      // }
     }
-    controller = TextfieldTagsController();
+    // controller = TextfieldTagsController();
 
     super.initState();
   }
@@ -187,36 +195,36 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
           ),
           const SizedBox(height: 10.0),
           const SizedBox(height: 10.0),
-          Center(
-            child: SelectFormField(
-              textAlign: TextAlign.center,
-              textAlignVertical: TextAlignVertical.center,
-              labelText: 'Dishware Type',
-              style: const TextStyle(
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
-              ),
-              type: SelectFormFieldType.dropdown,
-              items: types,
-              onChanged: (val) {
-                switch (val) {
-                  case 'plateware':
-                    typeController.text = 'Plateware';
-                    break;
-                  case 'metalware':
-                    typeController.text = 'Metalware';
-                    break;
-                  case 'flatware':
-                    typeController.text = 'Flatware';
-                    break;
-                  case 'glassware':
-                    typeController.text = 'Glassware';
-                    break;
-                  default:
-                }
-              },
-            ),
-          ),
+          // Center(
+          //   child: SelectFormField(
+          //     textAlign: TextAlign.center,
+          //     textAlignVertical: TextAlignVertical.center,
+          //     labelText: 'Dishware Type',
+          //     style: const TextStyle(
+          //       fontSize: 22.0,
+          //       fontWeight: FontWeight.bold,
+          //     ),
+          //     type: SelectFormFieldType.dropdown,
+          //     items: types,
+          //     onChanged: (val) {
+          //       switch (val) {
+          //         case 'plateware':
+          //           typeController.text = 'Plateware';
+          //           break;
+          //         case 'metalware':
+          //           typeController.text = 'Metalware';
+          //           break;
+          //         case 'flatware':
+          //           typeController.text = 'Flatware';
+          //           break;
+          //         case 'glassware':
+          //           typeController.text = 'Glassware';
+          //           break;
+          //         default:
+          //       }
+          //     },
+          //   ),
+          // ),
           const SizedBox(height: 10.0),
           const TextWidget(text: 'Dishware Name'),
           const SizedBox(height: 10.0),
@@ -229,6 +237,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
           const SizedBox(height: 10.0),
           const TextWidget(text: 'Dishware Tags'),
           TextFieldTags(
+            initialTags: tagGetter,
             textfieldTagsController: controller,
             textSeparators: const [' ', ','],
             letterCase: LetterCase.normal,
@@ -330,7 +339,9 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
               ),
             ),
             onPressed: () {
-              controller.clearTags();
+              print(controller.getTags);
+
+              // controller.clearTags();
             },
             child: const Text('CLEAR TAGS'),
           ),
@@ -387,17 +398,20 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                 ),
               ),
               onPressed: () async {
+                print(docId);
                 FocusScope.of(context).unfocus();
                 {
                   if (widget.docId != null) {
                     if (_image == null) {
+                      print("add dish " + docId);
                       await DishwareDatabaseHelper.updateDishwareChecklist(
                         name: nameController.text,
                         quantity: quantityController.text,
                         color: colorController.text,
+                        tags: controller.getTags!,
                         size: sizeController.text,
                         productPosition: productPositionController.text,
-                        docId: widget.docId!,
+                        docId: docId,
                       );
                     } else {
                       FirebaseFirestore.instance
@@ -434,14 +448,16 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                                             quantity: quantityController.text,
                                             size: sizeController.text,
                                             color: colorController.text,
+                                            tags: controller.getTags!,
                                             productPosition:
                                                 productPositionController.text,
-                                            docId: widget.docId!,
+                                            docId: docId,
                                             imageUrl: downloadedURL);
                                   }));
                     }
                   } else {
                     uploadToFirestore().then((value) async {
+                      print(value);
                       await DishwareDatabaseHelper.addDishwareCheckList(
                         name: nameController.text,
                         tags: controller.getTags!,
@@ -449,7 +465,6 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                         size: sizeController.text,
                         color: colorController.text,
                         productPosition: productPositionController.text,
-                        type: typeController.text,
                         imageUrl: downloadedURL,
                       );
                     });

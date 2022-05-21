@@ -29,13 +29,13 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
   late String position;
   late String color;
   late String size;
-  late String type;
   late String imageUrl;
   late List<String> tags;
   List<Widget> textWidgetList = <Widget>[]; // Here we defined a list of widget!
 
   @override
   void initState() {
+    print("object" + widget.checkList.toString());
     if (widget.checkList != null) {
       name = widget.checkList!.name;
       quantity = widget.checkList!.quantity;
@@ -43,7 +43,6 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
       size = widget.checkList!.size;
       position = widget.checkList!.productPosition;
       imageUrl = widget.checkList!.imageUrl;
-      type = widget.checkList!.type;
       tags = widget.checkList!.tags;
     }
     super.initState();
@@ -128,8 +127,6 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
                 ),
                 const SizedBox(height: 10.0),
                 const TextWidget(text: 'Type'),
-                const SizedBox(height: 10.0),
-                SizedBoxWidget(text: type),
                 const SizedBox(height: 10.0),
                 const TextWidget(text: 'Color'),
                 const SizedBox(height: 10.0),
