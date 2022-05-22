@@ -35,7 +35,6 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
 
   @override
   void initState() {
-    print("object" + widget.checkList.toString());
     if (widget.checkList != null) {
       name = widget.checkList!.name;
       quantity = widget.checkList!.quantity;
@@ -45,13 +44,6 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
       imageUrl = widget.checkList!.imageUrl;
       tags = widget.checkList!.tags;
     }
-    super.initState();
-  }
-
-  var img;
-
-  @override
-  Widget build(BuildContext context) {
     for (int i = 0; i < tags.length; i++) {
       textWidgetList.add(
         Text(
@@ -67,6 +59,13 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
         ),
       );
     }
+    super.initState();
+  }
+
+  var img;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("TAG"),
@@ -95,14 +94,6 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
                 ),
               ),
             ),
-            // Expanded(
-            //   child: ListView.builder(
-            //       itemCount: tags.length,
-            //       itemBuilder: (BuildContext ctxt, int index) {
-            //         return Text(tags[index]);
-            //       }),
-            // ),
-
             Column(
               children: [
                 const SizedBox(height: 10.0),
@@ -125,8 +116,6 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
                 const Divider(
                   color: Colors.grey,
                 ),
-                const SizedBox(height: 10.0),
-                const TextWidget(text: 'Type'),
                 const SizedBox(height: 10.0),
                 const TextWidget(text: 'Color'),
                 const SizedBox(height: 10.0),

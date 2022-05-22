@@ -121,8 +121,6 @@ class ListDishwareItem extends StatelessWidget {
                           style: TextStyle(color: Colors.black),
                         ),
                         onPressed: () {
-                          print(checkList);
-                          // print(docId);
                           Navigator.push(
                                   context,
                                   MaterialPageRoute(

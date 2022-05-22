@@ -38,29 +38,19 @@ dependencies:
   image_picker: ^0.8.4+11
   permission_handler: ^9.2.0
   firebase_storage: ^10.2.9
-  material_floating_search_bar: ^0.3.7
   search_page: ^2.0.0+1
   google_sign_in: ^5.2.4
   firebase_auth: ^3.3.10
   provider: ^6.0.2
   flutter_signin_button: ^2.0.0
   delayed_display: ^2.0.0
-  cupertino_back_gesture: ^0.1.0
-  select_form_field: ^2.2.0
-  flutter_barcode_scanner: ^2.0.0
-  barcode_image: ^2.0.1
-  barcode: ^2.2.0
-  bottom_navy_bar: ^6.0.0
   optimized_cached_image: ^3.0.0
   google_fonts: ^2.3.1
   shared_preferences: ^2.0.13
-  easy_sidemenu: ^0.2.0
-  dropdown_button2: ^1.2.5
   flutter_email_sender: ^5.1.0
   mailer: ^5.1.0
   cached_network_image: ^3.2.0
   textfield_tags: ^2.0.0+1
-  favorite_button: ^0.0.4
   flutter_dotenv: ^5.0.2
 
 dev_dependencies:

@@ -4,14 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:select_form_field/select_form_field.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import 'package:warehouse/common_widgets/text_widget.dart';
 import 'package:warehouse/common_widgets/textfield_widget.dart';
 import 'package:warehouse/dishware/models/dishware_checklist_model.dart';
 import 'package:warehouse/dishware/models/dishware_database_helper.dart';
-import 'package:warehouse/dishware/models/types.dart';
-import 'package:warehouse/dishware/screens/view_dishware_screen.dart';
 
 class AddDishwareScreen extends StatefulWidget {
   final DishwareCheckList? checkList;
@@ -195,36 +192,6 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
           ),
           const SizedBox(height: 10.0),
           const SizedBox(height: 10.0),
-          // Center(
-          //   child: SelectFormField(
-          //     textAlign: TextAlign.center,
-          //     textAlignVertical: TextAlignVertical.center,
-          //     labelText: 'Dishware Type',
-          //     style: const TextStyle(
-          //       fontSize: 22.0,
-          //       fontWeight: FontWeight.bold,
-          //     ),
-          //     type: SelectFormFieldType.dropdown,
-          //     items: types,
-          //     onChanged: (val) {
-          //       switch (val) {
-          //         case 'plateware':
-          //           typeController.text = 'Plateware';
-          //           break;
-          //         case 'metalware':
-          //           typeController.text = 'Metalware';
-          //           break;
-          //         case 'flatware':
-          //           typeController.text = 'Flatware';
-          //           break;
-          //         case 'glassware':
-          //           typeController.text = 'Glassware';
-          //           break;
-          //         default:
-          //       }
-          //     },
-          //   ),
-          // ),
           const SizedBox(height: 10.0),
           const TextWidget(text: 'Dishware Name'),
           const SizedBox(height: 10.0),
@@ -339,9 +306,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
               ),
             ),
             onPressed: () {
-              print(controller.getTags);
-
-              // controller.clearTags();
+              controller.clearTags();
             },
             child: const Text('CLEAR TAGS'),
           ),
@@ -398,12 +363,10 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                 ),
               ),
               onPressed: () async {
-                print(docId);
                 FocusScope.of(context).unfocus();
                 {
                   if (widget.docId != null) {
                     if (_image == null) {
-                      print("add dish " + docId);
                       await DishwareDatabaseHelper.updateDishwareChecklist(
                         name: nameController.text,
                         quantity: quantityController.text,
@@ -457,7 +420,6 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                     }
                   } else {
                     uploadToFirestore().then((value) async {
-                      print(value);
                       await DishwareDatabaseHelper.addDishwareCheckList(
                         name: nameController.text,
                         tags: controller.getTags!,

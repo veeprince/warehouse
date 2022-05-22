@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class DishwareDatabaseHelper {
   static final FirebaseFirestore _firebaseFirestore =
@@ -27,8 +28,6 @@ class DishwareDatabaseHelper {
     };
 
     await documentReferencer.set(data);
-    // .whenComplete(() => print("Dishware added"))
-    // .catchError((e) => print(e));
   }
 
   // var check2;
@@ -41,8 +40,6 @@ class DishwareDatabaseHelper {
     List<String>? tags,
     required String docId,
   }) async {
-    print("update " + docId);
-
     DocumentReference documentReferencer = _collectionReference.doc(docId);
     // print(documentReferencer.id);
     Map<String, dynamic> data = <String, dynamic>{
@@ -54,7 +51,7 @@ class DishwareDatabaseHelper {
       "tags": tags,
     };
 
-    await documentReferencer.update(data).catchError((e) => print(e));
+    await documentReferencer.update(data).catchError((e) => Text(e));
   }
 
   static Future<void> updateDishwareChecklistImage({
