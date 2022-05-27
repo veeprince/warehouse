@@ -112,7 +112,7 @@ class _SearchFirebaseState extends State<SearchFirebase> with DishFunctions {
                     produce.color,
                     produce.size,
                     produce.imageUrl,
-                    produce.tags.join(),
+                    produce.tags.join(' '),
                   ],
 
                   builder: (product) => Stack(children: [
