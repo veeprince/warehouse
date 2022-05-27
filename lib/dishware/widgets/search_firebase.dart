@@ -225,8 +225,27 @@ class _SearchFirebaseState extends State<SearchFirebase> with DishFunctions {
                                       if (valueText.isNotEmpty &&
                                           locationText.isNotEmpty)
                                         {
-                                          await sendEmail(valueText,
-                                              product.imageUrl, locationText)
+                                          await sendEmail(
+                                                  valueText,
+                                                  product.imageUrl,
+                                                  locationText)
+                                              .whenComplete(
+                                            () => Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                AlertDialog(
+                                                    buttonPadding:
+                                                        EdgeInsets.zero,
+                                                    backgroundColor:
+                                                        Colors.grey[900],
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
+                                                    content:
+                                                        Text("Email sent")),
+                                              ],
+                                            ),
+                                          )
                                         }
                                     });
                           },

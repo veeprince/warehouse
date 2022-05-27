@@ -5,7 +5,7 @@ import 'package:warehouse/blocs/google_auth_api.dart';
 
 mixin DishFunctions {
   Future sendEmail(amount, url, location) async {
-    // GoogleAuthApi.signOut();
+    GoogleAuthApi.signOut();
     // return;
     final user = await GoogleAuthApi.signIn();
     // print(user);
@@ -14,11 +14,11 @@ mixin DishFunctions {
     final email = user.email;
     final auth = await user.authentication;
     final token = auth.accessToken!;
-    GoogleAuthApi.signOut();
+    // GoogleAuthApi.signOut();
 
     final smtpServer = gmailSaslXoauth2(email, token);
     final message = Message()
-      ..from = Address(email, dotenv.env['NAME'])
+      ..from = Address(email, user.displayName)
       ..recipients = [dotenv.env['EMAIL']]
       ..subject = "Dishware Request"
       ..html =
