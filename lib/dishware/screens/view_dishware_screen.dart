@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:warehouse/common_widgets/sizedbox_widget.dart';
 import 'package:warehouse/common_widgets/text_widget.dart';
-
+import 'package:collection/collection.dart';
 import '../models/dishware_checklist_model.dart';
 
 class ViewDishwareScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
   late String color;
   late String size;
   late String imageUrl;
-  late List<String> tags;
+  late Map<String, dynamic> tags;
   List<Widget> textWidgetList = <Widget>[]; // Here we defined a list of widget!
 
   @override
@@ -43,22 +43,31 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
       position = widget.checkList!.productPosition;
       imageUrl = widget.checkList!.imageUrl;
       tags = widget.checkList!.tags;
+      print(tags);
     }
-    for (int i = 0; i < tags.length; i++) {
-      textWidgetList.add(
-        Text(
-          "${tags[i]}  ",
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          style: GoogleFonts.aBeeZee(
-            color: const Color.fromARGB(255, 255, 252, 252),
-            fontSize: 15.0,
-            fontWeight: FontWeight.bold,
-          ),
+    // // for (int i = 0; i < tags.length; i++) {
+    // for (var v in tags.keys) {
+    //   print(v);
+
+    //   //below is the solution
+    //   // v.().forEach((i, value) {
+    //   //   print('index=$i, value=$value');
+    //   // });
+    // }
+    textWidgetList.add(
+      Text(
+        "${tags.keys.join(", ")}  ",
+        textAlign: TextAlign.center,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+        style: GoogleFonts.aBeeZee(
+          color: const Color.fromARGB(255, 255, 252, 252),
+          fontSize: 15.0,
+          fontWeight: FontWeight.bold,
         ),
-      );
-    }
+      ),
+    );
+    // }
     super.initState();
   }
 

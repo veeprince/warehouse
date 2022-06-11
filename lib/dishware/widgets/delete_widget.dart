@@ -49,11 +49,8 @@ class DeleteWidget extends StatelessWidget {
               });
             }
           }).whenComplete(() {
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder: (context) => const DishwareHomePage(),
-                ),
-                (route) => route.isFirst);
+            int count = 0;
+            Navigator.of(context).popUntil((_) => count++ >= 2);
           });
         });
   }

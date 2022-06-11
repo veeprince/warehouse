@@ -13,7 +13,7 @@ class DishwareDatabaseHelper {
       required String color,
       required String productPosition,
       required String imageUrl,
-      required List<String> tags,
+      required Map<String, dynamic> tags,
       required String size}) async {
     DocumentReference documentReferencer = _collectionReference.doc();
 
@@ -37,7 +37,7 @@ class DishwareDatabaseHelper {
     String? color,
     String? size,
     String? productPosition,
-    List<String>? tags,
+    Map<String, dynamic>? tags,
     required String docId,
   }) async {
     DocumentReference documentReferencer = _collectionReference.doc(docId);
@@ -61,7 +61,7 @@ class DishwareDatabaseHelper {
     String? productPosition,
     String? imageUrl,
     String? size,
-    List<String>? tags,
+    Map<String, dynamic>? tags,
     required String docId,
   }) async {
     DocumentReference documentReferencer = _collectionReference.doc(docId);

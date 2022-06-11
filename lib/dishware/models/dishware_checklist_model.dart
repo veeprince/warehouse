@@ -5,7 +5,7 @@ class DishwareCheckList {
   String productPosition;
   String imageUrl;
   String size;
-  List<String> tags;
+  Map<String, dynamic> tags;
 
   DishwareCheckList(this.name, this.quantity, this.color, this.productPosition,
       this.imageUrl, this.size, this.tags);
@@ -18,7 +18,7 @@ class DishwareCheckList {
       json["productPosition"],
       json["imageUrl"],
       json["size"],
-      List.from(json['tags']),
+      Map.from(json['tags']),
     );
   }
 

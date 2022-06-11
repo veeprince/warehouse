@@ -39,10 +39,10 @@ class DishwareHomePageState extends State<DishwareHomePage>
             // IconButton(onPressed: () {}, icon: Icon(Icons.search)),
             IconButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddDishwareScreen()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                    settings: const RouteSettings(name: "/AddDishwareScreen"),
+                    builder: (context) => AddDishwareScreen(),
+                  ));
                 },
                 icon: const Icon(Icons.add)),
           ],

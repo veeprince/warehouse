@@ -21,9 +21,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     loginStateSubscription = authBloc.currentUser.listen((fbUser) {
       if (fbUser != null) {
         // print(fbUser);
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => const DishwareHomePage(),
-        ));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            settings: const RouteSettings(name: "/Page1"),
+            builder: (context) => const DishwareHomePage(),
+          ),
+        );
       }
     });
     super.initState();

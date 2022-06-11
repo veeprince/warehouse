@@ -9,6 +9,7 @@ import 'package:warehouse/common_widgets/text_widget.dart';
 import 'package:warehouse/common_widgets/textfield_widget.dart';
 import 'package:warehouse/dishware/models/dishware_checklist_model.dart';
 import 'package:warehouse/dishware/models/dishware_database_helper.dart';
+import 'package:warehouse/dishware/screens/dishware_home.dart';
 
 class AddDishwareScreen extends StatefulWidget {
   final DishwareCheckList? checkList;
@@ -35,12 +36,10 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
   late double _distanceToField;
 
   late String imageUrl;
-  late List<String> tags;
-  List<Widget> textWidgetList = <Widget>[]; // Here we defined a list of widget!
-
+  late Map<String, dynamic> tags;
   // ignore: prefer_typing_uninitialized_variables
   var imageId;
-  dynamic tagGetter;
+  List<String> tagGetter = [];
   late String docId;
   @override
   void initState() {
@@ -50,8 +49,9 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
       colorController.text = widget.checkList!.color;
       sizeController.text = widget.checkList!.size;
       productPositionController.text = widget.checkList!.productPosition;
-      tagGetter = widget.checkList!.tags;
+      tagGetter.addAll(widget.checkList!.tags.keys.join(" ").split(" "));
       docId = widget.docId!;
+      // print(tagGetter);
       // print(controller.getTags);
       // for (int i = 0; i < widget.checkList!.tags.length; i++) {
       //   tags.add()
@@ -371,7 +371,9 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                         name: nameController.text,
                         quantity: quantityController.text,
                         color: colorController.text,
-                        tags: controller.getTags!,
+                        tags: {
+                          for (var item in controller.getTags!) item: true
+                        },
                         size: sizeController.text,
                         productPosition: productPositionController.text,
                         docId: docId,
@@ -411,7 +413,11 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                                             quantity: quantityController.text,
                                             size: sizeController.text,
                                             color: colorController.text,
-                                            tags: controller.getTags!,
+                                            tags: {
+                                              for (var item
+                                                  in controller.getTags!)
+                                                item: true
+                                            },
                                             productPosition:
                                                 productPositionController.text,
                                             docId: docId,
@@ -422,7 +428,9 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                     uploadToFirestore().then((value) async {
                       await DishwareDatabaseHelper.addDishwareCheckList(
                         name: nameController.text,
-                        tags: controller.getTags!,
+                        tags: {
+                          for (var item in controller.getTags!) item: true
+                        },
                         quantity: quantityController.text,
                         size: sizeController.text,
                         color: colorController.text,
@@ -431,7 +439,8 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                       );
                     });
                   }
-                  Navigator.of(context).pop();
+
+                  Navigator.of(context).popUntil(ModalRoute.withName("/Page1"));
                 }
               },
               child: Padding(
