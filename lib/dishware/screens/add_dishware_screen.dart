@@ -9,7 +9,7 @@ import 'package:warehouse/common_widgets/text_widget.dart';
 import 'package:warehouse/common_widgets/textfield_widget.dart';
 import 'package:warehouse/dishware/models/dishware_checklist_model.dart';
 import 'package:warehouse/dishware/models/dishware_database_helper.dart';
-import 'package:warehouse/dishware/screens/dishware_home.dart';
+import 'package:warehouse/common_widgets/tags.dart';
 
 class AddDishwareScreen extends StatefulWidget {
   final DishwareCheckList? checkList;
@@ -27,28 +27,22 @@ class AddDishwareScreen extends StatefulWidget {
 class AddDishwareScreenState extends State<AddDishwareScreen> {
   FirebaseStorage storage = FirebaseStorage.instance;
 
-  TextEditingController nameController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
-  TextEditingController colorController = TextEditingController();
-  TextEditingController productPositionController = TextEditingController();
-  TextEditingController sizeController = TextEditingController();
-  TextfieldTagsController controller = TextfieldTagsController();
-  late double _distanceToField;
-
+  TextfieldTagsController textFieldController = TextfieldTagsController();
+  TextfieldTagsController locationFieldController = TextfieldTagsController();
   late String imageUrl;
   late Map<String, dynamic> tags;
   // ignore: prefer_typing_uninitialized_variables
   var imageId;
+  List<String> locationGetter = [];
   List<String> tagGetter = [];
   late String docId;
   @override
   void initState() {
     if (widget.checkList != null) {
-      nameController.text = widget.checkList!.name;
       quantityController.text = widget.checkList!.quantity;
-      colorController.text = widget.checkList!.color;
-      sizeController.text = widget.checkList!.size;
-      productPositionController.text = widget.checkList!.productPosition;
+      locationGetter
+          .addAll(widget.checkList!.locations.keys.join(" ").split(" "));
       tagGetter.addAll(widget.checkList!.tags.keys.join(" ").split(" "));
       docId = widget.docId!;
       // print(tagGetter);
@@ -60,12 +54,6 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
     // controller = TextfieldTagsController();
 
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _distanceToField = MediaQuery.of(context).size.width;
   }
 
   // ignore: prefer_typing_uninitialized_variables
@@ -130,7 +118,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("TAG Dishware list"),
+        title: const Text("Add TAG Plateware"),
       ),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -190,167 +178,161 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 10.0),
-          const SizedBox(height: 10.0),
-          const SizedBox(height: 10.0),
-          const TextWidget(text: 'Dishware Name'),
-          const SizedBox(height: 10.0),
-          TextFieldWidget(
-              enabled: true,
-              textInputType: TextInputType.name,
-              textInputAction: TextInputAction.next,
-              text: "Enter the dishware name",
-              controller: nameController),
-          const SizedBox(height: 10.0),
-          const TextWidget(text: 'Dishware Tags'),
-          TextFieldTags(
-            initialTags: tagGetter,
-            textfieldTagsController: controller,
-            textSeparators: const [' ', ','],
-            letterCase: LetterCase.normal,
-            inputfieldBuilder:
-                (context, tec, fn, error, onChanged, onSubmitted) {
-              return ((context, sc, tags, onTagDelete) {
-                return Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: TextField(
-                    controller: tec,
-                    focusNode: fn,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                        borderSide: BorderSide(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          width: 3.0,
-                        ),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        borderSide: BorderSide(
-                          color: Color.fromARGB(255, 123, 123, 123),
-                          width: 1.0,
-                        ),
-                      ),
-                      helperText: 'Seperated by comma',
-                      helperStyle: const TextStyle(
-                        color: Color.fromARGB(255, 179, 179, 179),
-                      ),
-                      hintText:
-                          controller.hasTags ? '' : "Enter the dishware tags",
-                      errorText: error,
-                      prefixIconConstraints:
-                          BoxConstraints(maxWidth: _distanceToField * 0.74),
-                      prefixIcon: tags.isNotEmpty
-                          ? SingleChildScrollView(
-                              controller: sc,
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                  children: tags.map((String tag) {
-                                return Container(
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(40.0),
-                                    ),
-                                    color: Color.fromARGB(255, 163, 163, 164),
-                                  ),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 5.0),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 5.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      InkWell(
-                                        child: Text(
-                                          '#$tag',
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                        onTap: () {
-                                          // ignore: avoid_print
-                                          print("$tag selected");
-                                        },
-                                      ),
-                                      const SizedBox(width: 4.0),
-                                      InkWell(
-                                        child: const Icon(
-                                          Icons.cancel,
-                                          size: 14.0,
-                                          color: Color.fromARGB(
-                                              255, 233, 233, 233),
-                                        ),
-                                        onTap: () {
-                                          onTagDelete(tag);
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }).toList()),
-                            )
-                          : null,
-                    ),
-                    onChanged: onChanged,
-                    onSubmitted: onSubmitted,
-                  ),
-                );
-              });
-            },
+
+          const SizedBox(height: 15.0),
+          const TextWidget(text: 'Plateware Tags'),
+          const SizedBox(height: 5.0),
+
+          TagWidget(
+            tagGetter: tagGetter,
+            textFieldController: textFieldController,
           ),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
-                const Color.fromARGB(255, 152, 152, 152),
-              ),
-            ),
-            onPressed: () {
-              controller.clearTags();
-            },
-            child: const Text('CLEAR TAGS'),
+          const SizedBox(height: 5.0),
+          const TextWidget(text: 'Enter the locations'),
+          const SizedBox(height: 5.0),
+
+          TagWidget(
+            tagGetter: locationGetter,
+            textFieldController: locationFieldController,
           ),
-          const SizedBox(height: 10.0),
-          const TextWidget(text: "Dishware Quantity"),
+          // TextFieldTags(
+          //   initialTags: tagGetter,
+          //   textfieldTagsController: textFieldController,
+          //   textSeparators: const [' ', ','],
+          //   letterCase: LetterCase.normal,
+          //   inputfieldBuilder:
+          //       (context, tec, fn, error, onChanged, onSubmitted) {
+          //     return ((context, sc, tags, onTagDelete) {
+          //       return Padding(
+          //         padding: const EdgeInsets.all(2.0),
+          //         child: TextField(
+          //           controller: tec,
+          //           focusNode: fn,
+          //           decoration: InputDecoration(
+          //             isDense: true,
+          //             border: const OutlineInputBorder(
+          //               borderRadius: BorderRadius.all(Radius.circular(4.0)),
+          //               borderSide: BorderSide(
+          //                 color: Color.fromARGB(255, 0, 0, 0),
+          //                 width: 3.0,
+          //               ),
+          //             ),
+          //             focusedBorder: const OutlineInputBorder(
+          //               borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          //               borderSide: BorderSide(
+          //                 color: Color.fromARGB(255, 123, 123, 123),
+          //                 width: 1.0,
+          //               ),
+          //             ),
+          //             helperText: 'Seperated by comma',
+          //             helperStyle: const TextStyle(
+          //               color: Color.fromARGB(255, 179, 179, 179),
+          //             ),
+          //             hintText:
+          //                 textFieldController.hasTags ? '' : "Enter the dishware tags",
+          //             errorText: error,
+          //             prefixIconConstraints:
+          //                 BoxConstraints(maxWidth: _distanceToField * 0.74),
+          //             prefixIcon: tags.isNotEmpty
+          //                 ? SingleChildScrollView(
+          //                     controller: sc,
+          //                     scrollDirection: Axis.horizontal,
+          //                     child: Row(
+          //                         children: tags.map((String tag) {
+          //                       return Container(
+          //                         decoration: const BoxDecoration(
+          //                           borderRadius: BorderRadius.all(
+          //                             Radius.circular(40.0),
+          //                           ),
+          //                           color: Color.fromARGB(255, 163, 163, 164),
+          //                         ),
+          //                         margin: const EdgeInsets.symmetric(
+          //                             horizontal: 5.0),
+          //                         padding: const EdgeInsets.symmetric(
+          //                             horizontal: 10.0, vertical: 5.0),
+          //                         child: Row(
+          //                           mainAxisAlignment:
+          //                               MainAxisAlignment.spaceBetween,
+          //                           children: [
+          //                             InkWell(
+          //                               child: Text(
+          //                                 '#$tag',
+          //                                 style: const TextStyle(
+          //                                     color: Colors.white),
+          //                               ),
+          //                               onTap: () {
+          //                                 // ignore: avoid_print
+          //                                 print("$tag selected");
+          //                               },
+          //                             ),
+          //                             const SizedBox(width: 4.0),
+          //                             InkWell(
+          //                               child: const Icon(
+          //                                 Icons.cancel,
+          //                                 size: 14.0,
+          //                                 color: Color.fromARGB(
+          //                                     255, 233, 233, 233),
+          //                               ),
+          //                               onTap: () {
+          //                                 onTagDelete(tag);
+          //                               },
+          //                             )
+          //                           ],
+          //                         ),
+          //                       );
+          //                     }).toList()),
+          //                   )
+          //                 : null,
+          //           ),
+          //           onChanged: onChanged,
+          //           onSubmitted: onSubmitted,
+          //         ),
+          //       );
+          //     });
+          //   },
+          // ),
+          // ElevatedButton(
+          //   style: ButtonStyle(
+          //     backgroundColor: MaterialStateProperty.all<Color>(
+          //       const Color.fromARGB(255, 152, 152, 152),
+          //     ),
+          //   ),
+          //   onPressed: () {
+          //     textFieldController.clearTags();
+          //   },
+          //   child: const Text('CLEAR TAGS'),
+          // ),
+          const SizedBox(height: 5.0),
+          const TextWidget(text: "Plateware Quantity"),
           const SizedBox(
-            height: 10,
+            height: 5,
           ),
           TextFieldWidget(
               enabled: true,
-              text: "Enter the dishware quantity",
+              text: "Enter the plateware quantity",
               controller: quantityController,
               textInputAction: TextInputAction.next,
               textInputType: TextInputType.number),
-          const SizedBox(height: 10.0),
-          const TextWidget(text: "Dishware Color"),
-          const SizedBox(
-            height: 10,
-          ),
-          TextFieldWidget(
-              enabled: true,
-              textInputType: TextInputType.name,
-              textInputAction: TextInputAction.next,
-              text: "Enter the color of the dishware",
-              controller: colorController),
-          const SizedBox(height: 10.0),
-          const TextWidget(text: "Dishware Size"),
-          const SizedBox(height: 10.0),
-          TextFieldWidget(
-              enabled: true,
-              textInputType: TextInputType.text,
-              textInputAction: TextInputAction.next,
-              text: "Enter the size of the dishware",
-              controller: sizeController),
-          const SizedBox(height: 10.0),
-          const TextWidget(text: 'Dishware Position'),
-          const SizedBox(height: 10.0),
-          TextFieldWidget(
-              enabled: true,
-              textInputType: TextInputType.text,
-              textInputAction: TextInputAction.done,
-              text: "Enter the position of the dishware",
-              controller: productPositionController),
-          const SizedBox(height: 10.0),
+
+          const SizedBox(height: 5.0),
+          // const TextWidget(text: "Dishware Size"),
+          // const SizedBox(height: 10.0),
+          // TextFieldWidget(
+          //     enabled: true,
+          //     textInputType: TextInputType.text,
+          //     textInputAction: TextInputAction.next,
+          //     text: "Enter the size of the dishware",
+          //     controller: sizeController),
+          // const SizedBox(height: 10.0),
+          // const TextWidget(text: 'Dishware Position'),
+          // const SizedBox(height: 10.0),
+          // TextFieldWidget(
+          //     enabled: true,
+          //     textInputType: TextInputType.text,
+          //     textInputAction: TextInputAction.done,
+          //     text: "Enter the position of the dishware",
+          //     controller: productPositionController),
+          // const SizedBox(height: 10.0),
           const SizedBox(height: 20.0),
           SizedBox(
             width: double.maxFinite,
@@ -368,14 +350,11 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                   if (widget.docId != null) {
                     if (_image == null) {
                       await DishwareDatabaseHelper.updateDishwareChecklist(
-                        name: nameController.text,
                         quantity: quantityController.text,
-                        color: colorController.text,
                         tags: {
-                          for (var item in controller.getTags!) item: true
+                          for (var item in textFieldController.getTags!)
+                            item: true
                         },
-                        size: sizeController.text,
-                        productPosition: productPositionController.text,
                         docId: docId,
                       );
                     } else {
@@ -405,36 +384,32 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                                 .delete();
                           }
                         }
-                      }).whenComplete(
-                              () => uploadToFirestore().then((value) async {
-                                    await DishwareDatabaseHelper
-                                        .updateDishwareChecklistImage(
-                                            name: nameController.text,
-                                            quantity: quantityController.text,
-                                            size: sizeController.text,
-                                            color: colorController.text,
-                                            tags: {
-                                              for (var item
-                                                  in controller.getTags!)
-                                                item: true
-                                            },
-                                            productPosition:
-                                                productPositionController.text,
-                                            docId: docId,
-                                            imageUrl: downloadedURL);
-                                  }));
+                      }).whenComplete(() =>
+                              uploadToFirestore().then((value) async {
+                                await DishwareDatabaseHelper
+                                    .updateDishwareChecklistImage(
+                                        quantity: quantityController.text,
+                                        tags: {
+                                          for (var item
+                                              in textFieldController.getTags!)
+                                            item: true
+                                        },
+                                        docId: docId,
+                                        imageUrl: downloadedURL);
+                              }));
                     }
                   } else {
                     uploadToFirestore().then((value) async {
                       await DishwareDatabaseHelper.addDishwareCheckList(
-                        name: nameController.text,
                         tags: {
-                          for (var item in controller.getTags!) item: true
+                          for (var item in textFieldController.getTags!)
+                            item: true
+                        },
+                        locations: {
+                          for (var item in locationFieldController.getTags!)
+                            item: true
                         },
                         quantity: quantityController.text,
-                        size: sizeController.text,
-                        color: colorController.text,
-                        productPosition: productPositionController.text,
                         imageUrl: downloadedURL,
                       );
                     });
@@ -463,12 +438,8 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
 
   @override
   void dispose() {
-    nameController.dispose();
     quantityController.dispose();
-    colorController.dispose();
-    sizeController.dispose();
-    productPositionController.dispose();
-    controller.dispose();
+    textFieldController.dispose();
     super.dispose();
   }
 }

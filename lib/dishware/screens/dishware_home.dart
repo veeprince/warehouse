@@ -31,17 +31,16 @@ class DishwareHomePageState extends State<DishwareHomePage>
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("TAG Dishware"),
+          title: const Text("TAG Plateware"),
           centerTitle: true,
           leading: const CustomAppBarWidget(),
           actions: <Widget>[
             const SearchFirebase(),
-            // IconButton(onPressed: () {}, icon: Icon(Icons.search)),
             IconButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     settings: const RouteSettings(name: "/AddDishwareScreen"),
-                    builder: (context) => AddDishwareScreen(),
+                    builder: (context) => const AddDishwareScreen(),
                   ));
                 },
                 icon: const Icon(Icons.add)),

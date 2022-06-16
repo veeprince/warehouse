@@ -10,12 +10,17 @@ class SizedBoxWidget extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: 40,
+          height: 25,
           child: SelectableText(
             text,
             textAlign: TextAlign.center,
-            style: GoogleFonts.secularOne(
-                fontSize: 20, color: const Color.fromARGB(255, 203, 202, 202)),
+            // overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: GoogleFonts.aBeeZee(
+              color: const Color.fromARGB(255, 255, 252, 252),
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         const Divider(

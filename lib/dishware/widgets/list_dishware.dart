@@ -29,7 +29,7 @@ class ListDishwareItem extends StatelessWidget {
             decoration: BoxDecoration(
                 color: const Color.fromARGB(31, 0, 0, 0),
                 borderRadius: BorderRadius.circular(15)),
-            child: Stack(alignment: Alignment.bottomCenter, children: [
+            child: Stack(alignment: const Alignment(0.6, 0), children: [
               CachedNetworkImage(
                 height: 150,
                 fit: BoxFit.contain,
@@ -39,11 +39,11 @@ class ListDishwareItem extends StatelessWidget {
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
               Align(
-                alignment: Alignment.topCenter,
+                alignment: const Alignment(0, 0.95),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 5),
                   child: Text(
-                    checkList.name,
+                    "Quantity: ${checkList.quantity}",
                     style: const TextStyle(
                         fontSize: 13,
                         color: Color.fromARGB(255, 255, 255, 255)),
@@ -112,8 +112,7 @@ class ListDishwareItem extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    content: Text(
-                        "Do you want to Edit ${checkList.name} or Delete?"),
+                    content: const Text("Do you want to Edit or Delete?"),
                     actions: <Widget>[
                       ElevatedButton(
                         child: const Text(

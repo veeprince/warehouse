@@ -5,7 +5,6 @@ import 'package:warehouse/dishware/screens/view_dishware_screen.dart';
 class SearchPageList extends StatelessWidget {
   final DishwareCheckList checkList;
   final String docId;
-  // ignore: prefer_typing_uninitialized_variables
   const SearchPageList(this.checkList, this.docId, {Key? key})
       : super(key: key);
 

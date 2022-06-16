@@ -7,23 +7,18 @@ class DishwareDatabaseHelper {
   static final CollectionReference _collectionReference =
       _firebaseFirestore.collection('Dishware');
 
-  static Future<void> addDishwareCheckList(
-      {required String name,
-      required String quantity,
-      required String color,
-      required String productPosition,
-      required String imageUrl,
-      required Map<String, dynamic> tags,
-      required String size}) async {
+  static Future<void> addDishwareCheckList({
+    required String quantity,
+    required String imageUrl,
+    required Map<String, dynamic> locations,
+    required Map<String, dynamic> tags,
+  }) async {
     DocumentReference documentReferencer = _collectionReference.doc();
 
     Map<String, dynamic> data = <String, dynamic>{
-      "name": name,
       "quantity": quantity,
-      "color": color,
-      "productPosition": productPosition,
       "imageUrl": imageUrl,
-      "size": size,
+      "locations": locations,
       "tags": tags,
     };
 
@@ -32,22 +27,16 @@ class DishwareDatabaseHelper {
 
   // var check2;
   static Future<void> updateDishwareChecklist({
-    String? name,
     String? quantity,
-    String? color,
-    String? size,
-    String? productPosition,
+    Map<String, dynamic>? locations,
     Map<String, dynamic>? tags,
     required String docId,
   }) async {
     DocumentReference documentReferencer = _collectionReference.doc(docId);
     // print(documentReferencer.id);
     Map<String, dynamic> data = <String, dynamic>{
-      "name": name,
       "quantity": quantity,
-      "color": color,
-      "size": size,
-      "productPosition": productPosition,
+      "locations": locations,
       "tags": tags,
     };
 
@@ -58,21 +47,17 @@ class DishwareDatabaseHelper {
     String? name,
     String? quantity,
     String? color,
-    String? productPosition,
     String? imageUrl,
-    String? size,
+    Map<String, dynamic>? locations,
     Map<String, dynamic>? tags,
     required String docId,
   }) async {
     DocumentReference documentReferencer = _collectionReference.doc(docId);
 
     Map<String, dynamic> data = <String, dynamic>{
-      "name": name,
       "quantity": quantity.toString(),
-      "color": color,
-      "productPosition": productPosition,
+      "locations": locations,
       'imageUrl': imageUrl,
-      'size': size,
       "tags": tags,
     };
 
@@ -82,14 +67,8 @@ class DishwareDatabaseHelper {
   static Stream<QuerySnapshot> getDishwareChecklist() {
     CollectionReference checklistItemCollection = _collectionReference;
 
-    return checklistItemCollection.orderBy('name').snapshots();
+    return checklistItemCollection.orderBy('quantity').snapshots();
   }
-
-  // static Stream<DocumentSnapshot> showInventoryChecklist() {
-  //   DocumentReference checklistItemCollection = _collectionReference.doc();
-
-  //   return checklistItemCollection.snapshots();
-  // }
 
   static Future<void> deleteChecklist({
     required String docId,

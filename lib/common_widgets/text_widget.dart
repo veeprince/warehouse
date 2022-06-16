@@ -11,9 +11,9 @@ class TextWidget extends StatelessWidget {
       text,
       textAlign: TextAlign.center,
       style: GoogleFonts.aBeeZee(
-        color: const Color.fromARGB(255, 143, 140, 140),
+        color: const Color.fromARGB(255, 109, 109, 109),
         fontSize: 30.0,
-        fontWeight: FontWeight.bold,
+        fontWeight: FontWeight.normal,
       ),
     );
   }

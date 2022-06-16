@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:warehouse/common_widgets/sizedbox_widget.dart';
 import 'package:warehouse/common_widgets/text_widget.dart';
-import 'package:collection/collection.dart';
 import '../models/dishware_checklist_model.dart';
 
 class ViewDishwareScreen extends StatefulWidget {
@@ -24,26 +23,20 @@ class ViewDishwareScreen extends StatefulWidget {
 var uuid;
 
 class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
-  late String name;
   late String quantity;
-  late String position;
-  late String color;
-  late String size;
+
   late String imageUrl;
   late Map<String, dynamic> tags;
   List<Widget> textWidgetList = <Widget>[]; // Here we defined a list of widget!
-
+  late Map<String, dynamic> locations;
+  List<Widget> locationWidgetList = <Widget>[];
   @override
   void initState() {
     if (widget.checkList != null) {
-      name = widget.checkList!.name;
       quantity = widget.checkList!.quantity;
-      color = widget.checkList!.color;
-      size = widget.checkList!.size;
-      position = widget.checkList!.productPosition;
+      locations = widget.checkList!.locations;
       imageUrl = widget.checkList!.imageUrl;
       tags = widget.checkList!.tags;
-      print(tags);
     }
     // // for (int i = 0; i < tags.length; i++) {
     // for (var v in tags.keys) {
@@ -54,15 +47,28 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
     //   //   print('index=$i, value=$value');
     //   // });
     // }
-    textWidgetList.add(
+    locationWidgetList.add(
       Text(
-        "${tags.keys.join(", ")}  ",
+        "${locations.keys.join(", ")}  ",
         textAlign: TextAlign.center,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
         style: GoogleFonts.aBeeZee(
           color: const Color.fromARGB(255, 255, 252, 252),
           fontSize: 15.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+    textWidgetList.add(
+      SelectableText(
+        "${tags.keys.join(", ")}  ",
+        textAlign: TextAlign.center,
+        // overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+        style: GoogleFonts.aBeeZee(
+          color: const Color.fromARGB(255, 255, 252, 252),
+          fontSize: 20.0,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -77,7 +83,7 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("TAG"),
+        title: const Text("TAG Plateware"),
       ),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -106,13 +112,6 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
             Column(
               children: [
                 const SizedBox(height: 10.0),
-                const TextWidget(text: 'Dishware Name'),
-                const SizedBox(height: 10.0),
-                SizedBoxWidget(text: name),
-                const SizedBox(height: 10.0),
-                const TextWidget(text: 'Quantity'),
-                SizedBoxWidget(text: quantity),
-                const SizedBox(height: 10.0),
                 const TextWidget(text: 'Tags'),
                 const SizedBox(height: 10.0),
                 SingleChildScrollView(
@@ -121,22 +120,13 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
                     children: textWidgetList,
                   ),
                 ),
-                const SizedBox(height: 5.0),
+                const SizedBox(height: 10.0),
                 const Divider(
                   color: Colors.grey,
                 ),
-                const SizedBox(height: 10.0),
-                const TextWidget(text: 'Color'),
-                const SizedBox(height: 10.0),
-                SizedBoxWidget(text: color),
-                const SizedBox(height: 10.0),
-                const TextWidget(text: 'Size'),
-                const SizedBox(height: 10.0),
-                SizedBoxWidget(text: size),
-                const SizedBox(height: 10.0),
-                const TextWidget(text: 'Position'),
-                const SizedBox(height: 10.0),
-                SizedBoxWidget(text: position),
+                const TextWidget(text: 'Quantity'),
+                const SizedBox(height: 5.0),
+                SizedBoxWidget(text: quantity),
                 const SizedBox(height: 10.0),
               ],
             ),

@@ -1,9 +1,5 @@
-// main.dart
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:warehouse/dishware/models/dishware_checklist_model.dart';
 import 'package:warehouse/dishware/screens/add_dishware_screen.dart';
@@ -40,6 +36,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
   List<Map<String, dynamic>> results = [];
   List<String> result = [];
   var name = '';
+
   @override
   initState() {
     FirebaseFirestore.instance
@@ -95,15 +92,25 @@ class _CustomSearchPageState extends State<CustomSearchPage>
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: TextField(
+                  textInputAction: TextInputAction.search,
                   controller: searchField,
+                  onEditingComplete: () {
+                    searchString = searchField.text;
+                    if (searchString.isNotEmpty) {
+                      _runFilter(searchString.split(" "));
+                    }
+                  },
                   decoration: InputDecoration(
 
                       // prefixIcon: Icon(Icons.search),
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.search),
+                        icon: const Icon(Icons.clear),
                         onPressed: () {
-                          searchString = searchField.text;
-                          _runFilter(searchString.split(" "));
+                          searchField.clear();
+                          // searchString = searchField.text;
+                          // if (searchString.isNotEmpty) {
+                          //   _runFilter(searchString.split(" "));
+                          // }
                         },
                       ),
                       hintText: 'Search...',
@@ -130,8 +137,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
                     itemBuilder: (context, index) => Stack(children: [
                       ListTile(
                         title: Stack(children: [
-                          Align(
-                            alignment: Alignment.center,
+                          Center(
                             child: Container(
                               width: 370,
                               height: 300,
@@ -200,7 +206,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
                               )),
                         ),
                         onTap: () {
-                          name = foundUsers[index]["name"];
+                          name = foundUsers[index]["imageUrl"];
                           showModalBottomSheet(
                             enableDrag: true,
                             isDismissible: true,
@@ -216,13 +222,10 @@ class _CustomSearchPageState extends State<CustomSearchPage>
                               children: <Widget>[
                                 SearchPageList(
                                     DishwareCheckList(
-                                      foundUsers[index]["name"],
                                       foundUsers[index]["quantity"],
-                                      foundUsers[index]["color"],
-                                      foundUsers[index]["productPosition"],
                                       foundUsers[index]["imageUrl"],
-                                      foundUsers[index]["size"],
                                       foundUsers[index]["tags"],
+                                      foundUsers[index]["locations"],
                                     ),
                                     docID),
                                 ListTile(
@@ -231,13 +234,10 @@ class _CustomSearchPageState extends State<CustomSearchPage>
                                     onTap: () {
                                       dynamic dishwareChecklist =
                                           DishwareCheckList(
-                                        foundUsers[index]["name"],
                                         foundUsers[index]["quantity"],
-                                        foundUsers[index]["color"],
-                                        foundUsers[index]["productPosition"],
                                         foundUsers[index]["imageUrl"],
-                                        foundUsers[index]["size"],
                                         foundUsers[index]["tags"],
+                                        foundUsers[index]["locations"],
                                       );
 
                                       FirebaseFirestore.instance
@@ -270,17 +270,9 @@ class _CustomSearchPageState extends State<CustomSearchPage>
                                                           docId: docID),
                                                 ))
                                               });
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) =>
-                                      //             AddDishwareScreen(
-                                      //                 checkList:
-                                      //                     dishwareChecklist,
-                                      //                 docId: docID)))
                                     }),
                                 DeleteWidget(
-                                    foundUsers[index]["name"], productId),
+                                    foundUsers[index]["imageUrl"], productId),
                                 const SizedBox(
                                   height: 20.0,
                                 )
@@ -294,7 +286,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
                 : const Align(
                     alignment: Alignment.center,
                     child: Text(
-                      'No results found',
+                      'No plateware found',
                       style: TextStyle(fontSize: 24),
                     ),
                   ),

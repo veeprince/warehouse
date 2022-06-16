@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:warehouse/dishware/models/dishware_database_helper.dart';
-import 'package:warehouse/dishware/screens/dishware_home.dart';
 
 // ignore: must_be_immutable
 class DeleteWidget extends StatelessWidget {
@@ -23,7 +22,7 @@ class DeleteWidget extends StatelessWidget {
           var imageId;
           FirebaseFirestore.instance
               .collection("Dishware")
-              .where("name", isEqualTo: name)
+              .where("imageUrl", isEqualTo: name)
               .get()
               .then((value) {
             for (var element in value.docs) {
