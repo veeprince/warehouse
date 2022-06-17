@@ -28,6 +28,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
   FirebaseStorage storage = FirebaseStorage.instance;
 
   TextEditingController quantityController = TextEditingController();
+  TextEditingController colorController = TextEditingController();
   TextfieldTagsController textFieldController = TextfieldTagsController();
   TextfieldTagsController locationFieldController = TextfieldTagsController();
   late String imageUrl;
@@ -41,6 +42,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
   void initState() {
     if (widget.checkList != null) {
       quantityController.text = widget.checkList!.quantity;
+      colorController.text = widget.checkList!.color;
       locationGetter
           .addAll(widget.checkList!.locations.keys.join(" ").split(" "));
       tagGetter.addAll(widget.checkList!.tags.keys.join(" ").split(" "));
@@ -179,7 +181,8 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
             ),
           ),
 
-          const SizedBox(height: 15.0),
+          const SizedBox(height: 10.0),
+
           const TextWidget(text: 'Plateware Tags'),
           const SizedBox(height: 5.0),
 
@@ -313,7 +316,17 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
               controller: quantityController,
               textInputAction: TextInputAction.next,
               textInputType: TextInputType.number),
-
+          const SizedBox(height: 5.0),
+          const TextWidget(text: "Plateware Color"),
+          const SizedBox(
+            height: 5,
+          ),
+          TextFieldWidget(
+              enabled: true,
+              textInputType: TextInputType.name,
+              textInputAction: TextInputAction.next,
+              text: "Enter the color of the plateware",
+              controller: colorController),
           const SizedBox(height: 5.0),
           // const TextWidget(text: "Dishware Size"),
           // const SizedBox(height: 10.0),
@@ -351,6 +364,11 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                     if (_image == null) {
                       await DishwareDatabaseHelper.updateDishwareChecklist(
                         quantity: quantityController.text,
+                        color: colorController.text,
+                        locations: {
+                          for (var item in locationFieldController.getTags!)
+                            item: true
+                        },
                         tags: {
                           for (var item in textFieldController.getTags!)
                             item: true
@@ -389,6 +407,13 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                                 await DishwareDatabaseHelper
                                     .updateDishwareChecklistImage(
                                         quantity: quantityController.text,
+                                        color: colorController.text,
+                                        locations: {
+                                          for (var item
+                                              in locationFieldController
+                                                  .getTags!)
+                                            item: true
+                                        },
                                         tags: {
                                           for (var item
                                               in textFieldController.getTags!)
@@ -410,6 +435,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                             item: true
                         },
                         quantity: quantityController.text,
+                        color: colorController.text,
                         imageUrl: downloadedURL,
                       );
                     });
@@ -439,6 +465,8 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
   @override
   void dispose() {
     quantityController.dispose();
+    colorController.dispose();
+    locationFieldController.dispose();
     textFieldController.dispose();
     super.dispose();
   }

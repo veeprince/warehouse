@@ -1,6 +1,9 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:warehouse/dishware/models/dishware_checklist_model.dart';
 import 'package:warehouse/dishware/screens/add_dishware_screen.dart';
 import 'package:warehouse/dishware/widgets/delete_widget.dart';
@@ -16,6 +19,9 @@ class CustomSearchPage extends StatefulWidget {
 
 class _CustomSearchPageState extends State<CustomSearchPage>
     with DishFunctions {
+  final TextEditingController colorTextEditingController =
+      TextEditingController();
+
   var searchString = '';
   TextEditingController searchField = TextEditingController();
 
@@ -29,6 +35,23 @@ class _CustomSearchPageState extends State<CustomSearchPage>
   List<List<String>> check = [];
   var productId = '';
   var docID = "";
+  final List<String> genderItems = [
+    'Any',
+    'Yellow',
+    'Green',
+    'Red',
+    'Blue',
+    'Brown',
+    'Black',
+    'Pink',
+    'Orange',
+    'White',
+    'Gold',
+  ];
+
+  String? selectedValue;
+
+  final _formKey = GlobalKey<FormState>();
 
   final List<Map<String, dynamic>> _allUsers = [];
   // This list holds the data for the list view
@@ -53,24 +76,82 @@ class _CustomSearchPageState extends State<CustomSearchPage>
 
   void _runFilter(List<String> enteredKeyword) {
     // print(_allUsers);
-    late Query<Map<String, dynamic>> cities;
     var firestoreCol = FirebaseFirestore.instance.collection("Dishware");
+    if (selectedValue != null &&
+        selectedValue != "Any" &&
+        searchField.text.isNotEmpty) {
+      late Query<Map<String, dynamic>> color;
+      late Query<Map<String, dynamic>> dishes;
+      color =
+          firestoreCol.where("color", isEqualTo: selectedValue!.toLowerCase());
 
-    for (var element in enteredKeyword) {
-      // print(element);
-      cities = firestoreCol.where("tags.$element", isEqualTo: true);
-      // print(cities.runtimeType);
+      color.get().then((QuerySnapshot querysnapshot) {
+        for (var element in enteredKeyword) {
+          // print(element);
+          dishes = color.where("tags.$element", isEqualTo: true);
+
+          // print(cities.runtimeType);
+        }
+        dishes.get().then((QuerySnapshot querysnapshot) {
+          // print(querysnapshot.docs.hashCode);
+          // print(querysnapshot.docs);
+          for (var doc in querysnapshot.docs) {
+            foundUsers.add(doc.data() as Map<String, dynamic>);
+            // foundUsers.contains(doc)
+            // print(doc.data().runtimeType);
+          }
+        }).whenComplete(() => setState(() {
+              // print(foundUsers.toSet());
+              foundUsers;
+            }));
+        // print(querysnapshot.docs);
+        // for (var doc in querysnapshot.docs) {
+        //   print(doc.data());
+        // }
+      });
+    } else if (selectedValue == "Any" && searchString.isNotEmpty) {
+      late Query<Map<String, dynamic>> dishes;
+      late Query<Map<String, dynamic>> color;
+      color = firestoreCol.where("color");
+      for (var element in enteredKeyword) {
+        // print(element);
+        dishes = color.where("tags.$element", isEqualTo: true);
+        // print(cities.runtimeType);
+      }
+
+      dishes.get().then((QuerySnapshot querysnapshot) {
+        // print(querysnapshot.docs);
+        for (var doc in querysnapshot.docs) {
+          // print(doc);
+          foundUsers.add(doc.data() as Map<String, dynamic>);
+        }
+      }).whenComplete(() => setState(() {
+            foundUsers;
+          }));
+    } else if (selectedValue == "Any" && searchString.isEmpty) {
+      late Query<Map<String, dynamic>> color;
+      color = firestoreCol.where("color");
+      color.get().then((QuerySnapshot querysnapshot) {
+        // print(querysnapshot.docs);
+        for (var doc in querysnapshot.docs) {
+          foundUsers.add(doc.data() as Map<String, dynamic>);
+        }
+      }).whenComplete(() => setState(() {
+            foundUsers;
+          }));
+    } else {
+      foundUsers = [];
+
+      ScaffoldMessenger.of(context).showSnackBar(snackbarRenderer("Oh snap",
+          "Please select a color or enter a search word", ContentType.failure));
     }
 
-    cities.get().then((QuerySnapshot querysnapshot) {
-      // print(querysnapshot.docs);
-      for (var doc in querysnapshot.docs) {
-        // print(doc);
-        foundUsers.add(doc.data() as Map<String, dynamic>);
-      }
-    }).whenComplete(() => setState(() {
-          foundUsers;
-        }));
+    // return;
+    // for (var element in enteredKeyword) {
+    //   // print(element);
+    //   cities = firestoreCol.where("tags.$element", isEqualTo: true);
+    //   // print(cities.runtimeType);
+    // }
     foundUsers = [];
   }
 
@@ -78,49 +159,100 @@ class _CustomSearchPageState extends State<CustomSearchPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          // The search area here
-          title: Padding(
-        padding: const EdgeInsets.only(right: 20.0),
-        child: Center(
+        title: Center(
           child: Container(
-            // width: double.infinity,
-            height: 40,
+            // height: 49,
             decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 42, 42, 42),
                 borderRadius: BorderRadius.circular(5)),
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
+                padding: const EdgeInsets.only(left: 3.0, right: 20),
                 child: TextField(
                   textInputAction: TextInputAction.search,
                   controller: searchField,
-                  onEditingComplete: () {
-                    searchString = searchField.text;
-                    if (searchString.isNotEmpty) {
-                      _runFilter(searchString.split(" "));
-                    }
-                  },
                   decoration: InputDecoration(
+                    // prefixIcon: Icon(Icons.search),
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: SizedBox(
+                        width: 20,
+                        height: 5,
+                        child: IconButton(
+                            splashColor: Colors.grey,
+                            splashRadius: 30,
+                            onPressed: () {
+                              searchString = searchField.text;
 
-                      // prefixIcon: Icon(Icons.search),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          searchField.clear();
-                          // searchString = searchField.text;
-                          // if (searchString.isNotEmpty) {
-                          //   _runFilter(searchString.split(" "));
-                          // }
-                        },
+                              _runFilter(searchString.split(" "));
+                              foundUsers = [];
+                            },
+                            icon: const Icon(Icons.search_sharp)),
                       ),
-                      hintText: 'Search...',
-                      border: InputBorder.none),
+                    ),
+                    prefixIcon: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 75,
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButtonFormField2(
+                                // customItemsHeight: 9,
+
+                                customButton: renderWidget(selectedValue == null
+                                    ? "Color"
+                                    : selectedValue!),
+                                decoration: const InputDecoration(
+                                  //Add isDense true and zero Padding.
+                                  //Add Horizontal padding using buttonPadding and Vertical padding by increasing buttonHeight instead of add Padding here so that The whole TextField Button become clickable, and also the dropdown menu open under The whole TextField Button.
+                                  isDense: false,
+                                  contentPadding: EdgeInsets.all(8),
+                                ),
+                                isExpanded: true,
+
+                                items: genderItems
+                                    .map((item) => DropdownMenuItem<String>(
+                                          value: item,
+                                          child: Text(
+                                            item,
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                            ),
+                                          ),
+                                        ))
+                                    .toList(),
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Please select a color.';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  setState(() {});
+                                  selectedValue = value.toString();
+                                  // print(value);
+                                  //Do something when changing the item if you want.
+                                },
+                                // onSaved: (value) {
+                                //   print(value);
+                                //   selectedValue = value.toString();
+                                // },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    hintText: ' Search...',
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      )),
+      ),
       body: Column(
         children: [
           // const SizedBox(
@@ -128,7 +260,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
           // ),
 
           const SizedBox(
-            height: 20,
+            height: 10,
           ),
           Expanded(
             child: foundUsers.isNotEmpty
@@ -170,34 +302,22 @@ class _CustomSearchPageState extends State<CustomSearchPage>
                                 primary: const Color.fromARGB(255, 61, 61, 61),
                               ),
                               onPressed: () async {
+                                var image = foundUsers[index]["imageUrl"];
                                 _displayTextInputDialog(context)
                                     .whenComplete(() async => {
                                           if (valueText.isNotEmpty &&
                                               locationText.isNotEmpty)
                                             {
-                                              await sendEmail(
-                                                      valueText,
-                                                      foundUsers[index]
-                                                          ["imageUrl"],
-                                                      locationText)
-                                                  .whenComplete(
-                                                () => Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    AlertDialog(
-                                                        buttonPadding:
-                                                            EdgeInsets.zero,
-                                                        backgroundColor:
-                                                            Colors.grey[900],
-                                                        contentPadding:
-                                                            EdgeInsets.zero,
-                                                        content: const Text(
-                                                            "Email sent")),
-                                                  ],
-                                                ),
-                                              )
+                                              await sendEmail(valueText, image,
+                                                  locationText)
                                             }
+                                        })
+                                    .whenComplete(() => {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackbarRenderer(
+                                                  "Hurray",
+                                                  "Facilities have been notified of your request",
+                                                  ContentType.success))
                                         });
                               },
                               child: const Text(
@@ -224,6 +344,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
                                     DishwareCheckList(
                                       foundUsers[index]["quantity"],
                                       foundUsers[index]["imageUrl"],
+                                      foundUsers[index]["color"],
                                       foundUsers[index]["tags"],
                                       foundUsers[index]["locations"],
                                     ),
@@ -236,6 +357,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
                                           DishwareCheckList(
                                         foundUsers[index]["quantity"],
                                         foundUsers[index]["imageUrl"],
+                                        foundUsers[index]["color"],
                                         foundUsers[index]["tags"],
                                         foundUsers[index]["locations"],
                                       );
@@ -243,9 +365,9 @@ class _CustomSearchPageState extends State<CustomSearchPage>
                                       FirebaseFirestore.instance
                                           .collection("Dishware")
                                           .where(
-                                            "name",
+                                            "imageUrl",
                                             isEqualTo: foundUsers[index]
-                                                ["name"],
+                                                ["imageUrl"],
                                           )
                                           .get()
                                           .then((value) {
@@ -336,16 +458,50 @@ class _CustomSearchPageState extends State<CustomSearchPage>
               TextButton(
                 child: const Text('REQUEST'),
                 onPressed: () {
-                  setState(() {
-                    codeDialog = valueText;
-                    Navigator.pop(context);
-                    textFieldController.clear();
-                    locationTextFieldController.clear();
-                  });
+                  if (valueText.isEmpty || locationText.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(snackbarRenderer(
+                        "Ooops",
+                        "Please enter a quantity or a delivery location",
+                        ContentType.warning));
+                  } else {
+                    setState(() {
+                      codeDialog = valueText;
+                      Navigator.pop(context);
+                      textFieldController.clear();
+                      locationTextFieldController.clear();
+                    });
+                  }
                 },
               ),
             ],
           );
         });
   }
+
+  renderWidget(String condition) {
+    return Text(
+      condition,
+      style: GoogleFonts.aBeeZee(
+        color: const Color.fromARGB(255, 165, 165, 165),
+        fontSize: 16.0,
+        fontWeight: FontWeight.normal,
+      ),
+    );
+  }
+}
+
+snackbarRenderer(String title, String message, ContentType contentType) {
+  return SnackBar(
+    /// need to set following properties for best effect of awesome_snackbar_content
+    elevation: 0,
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: Colors.transparent,
+    content: AwesomeSnackbarContent(
+      title: title,
+      message: message,
+
+      /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+      contentType: contentType,
+    ),
+  );
 }

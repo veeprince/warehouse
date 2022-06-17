@@ -39,7 +39,6 @@ class DishwareHomePageState extends State<DishwareHomePage>
             IconButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    settings: const RouteSettings(name: "/AddDishwareScreen"),
                     builder: (context) => const AddDishwareScreen(),
                   ));
                 },

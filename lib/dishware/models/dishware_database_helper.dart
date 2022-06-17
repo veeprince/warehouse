@@ -10,6 +10,7 @@ class DishwareDatabaseHelper {
   static Future<void> addDishwareCheckList({
     required String quantity,
     required String imageUrl,
+    required String color,
     required Map<String, dynamic> locations,
     required Map<String, dynamic> tags,
   }) async {
@@ -18,6 +19,7 @@ class DishwareDatabaseHelper {
     Map<String, dynamic> data = <String, dynamic>{
       "quantity": quantity,
       "imageUrl": imageUrl,
+      "color": color,
       "locations": locations,
       "tags": tags,
     };
@@ -28,6 +30,7 @@ class DishwareDatabaseHelper {
   // var check2;
   static Future<void> updateDishwareChecklist({
     String? quantity,
+    String? color,
     Map<String, dynamic>? locations,
     Map<String, dynamic>? tags,
     required String docId,
@@ -36,6 +39,7 @@ class DishwareDatabaseHelper {
     // print(documentReferencer.id);
     Map<String, dynamic> data = <String, dynamic>{
       "quantity": quantity,
+      "color": color,
       "locations": locations,
       "tags": tags,
     };
@@ -44,7 +48,6 @@ class DishwareDatabaseHelper {
   }
 
   static Future<void> updateDishwareChecklistImage({
-    String? name,
     String? quantity,
     String? color,
     String? imageUrl,
@@ -56,6 +59,7 @@ class DishwareDatabaseHelper {
 
     Map<String, dynamic> data = <String, dynamic>{
       "quantity": quantity.toString(),
+      "color": color,
       "locations": locations,
       'imageUrl': imageUrl,
       "tags": tags,
@@ -67,7 +71,7 @@ class DishwareDatabaseHelper {
   static Stream<QuerySnapshot> getDishwareChecklist() {
     CollectionReference checklistItemCollection = _collectionReference;
 
-    return checklistItemCollection.orderBy('quantity').snapshots();
+    return checklistItemCollection.orderBy('color').snapshots();
   }
 
   static Future<void> deleteChecklist({

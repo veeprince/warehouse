@@ -121,13 +121,13 @@ class ListDishwareItem extends StatelessWidget {
                         ),
                         onPressed: () {
                           Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AddDishwareScreen(
-                                            checkList: checkList,
-                                            docId: docId,
-                                          )))
-                              .whenComplete(() => Navigator.of(context).pop());
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddDishwareScreen(
+                                        checkList: checkList,
+                                        docId: docId,
+                                      ))).then((value) => Navigator.of(context)
+                              .popUntil(ModalRoute.withName("/Page1")));
                         },
                       ),
                       ElevatedButton(

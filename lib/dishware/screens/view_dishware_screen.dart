@@ -24,7 +24,7 @@ var uuid;
 
 class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
   late String quantity;
-
+  late String color;
   late String imageUrl;
   late Map<String, dynamic> tags;
   List<Widget> textWidgetList = <Widget>[]; // Here we defined a list of widget!
@@ -36,6 +36,7 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
       quantity = widget.checkList!.quantity;
       locations = widget.checkList!.locations;
       imageUrl = widget.checkList!.imageUrl;
+      color = widget.checkList!.color;
       tags = widget.checkList!.tags;
     }
     // // for (int i = 0; i < tags.length; i++) {
@@ -127,6 +128,10 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
                 const TextWidget(text: 'Quantity'),
                 const SizedBox(height: 5.0),
                 SizedBoxWidget(text: quantity),
+                const SizedBox(height: 10.0),
+                const TextWidget(text: 'Color'),
+                const SizedBox(height: 5.0),
+                SizedBoxWidget(text: color),
                 const SizedBox(height: 10.0),
               ],
             ),
