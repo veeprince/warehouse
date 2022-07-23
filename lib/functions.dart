@@ -22,7 +22,7 @@ mixin DishFunctions {
       ..recipients = [dotenv.env['EMAIL']]
       ..subject = "Dishware Request"
       ..html =
-          '<p>${user.displayName} would like $amount of this dishware delivered to $location.</p><img src="$url" width="500" height="600">'
+          '<p>${user.displayName} would like $amount of these dishware delivered to $location.</p><img src="$url" width="500" height="600">'
       ..text = "$amount amount";
 
     try {
