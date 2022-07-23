@@ -48,7 +48,7 @@ class DishwareHomePageState extends State<DishwareHomePage>
         body: DelayedDisplay(
           delay: const Duration(seconds: 1),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 10, 15),
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Center(
               child: StreamBuilder<QuerySnapshot>(
                 stream: DishwareDatabaseHelper.getDishwareChecklist(),
@@ -82,10 +82,10 @@ class DishwareHomePageState extends State<DishwareHomePage>
                       },
                       gridDelegate:
                           const SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 300,
+                              maxCrossAxisExtent: 200,
                               childAspectRatio: 2 / 2,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10),
+                              crossAxisSpacing: 4,
+                              mainAxisSpacing: 1),
                     );
                   }
                   return const Center(

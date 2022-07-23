@@ -3,6 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:warehouse/common_widgets/sizedbox_widget.dart';
 import 'package:warehouse/common_widgets/text_widget.dart';
 import '../models/dishware_checklist_model.dart';
@@ -86,57 +87,72 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
       appBar: AppBar(
         title: const Text("TAG Plateware"),
       ),
-      body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        child: ListView(
-          // shrinkWrap: true,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            SizedBox(
-              width: 300.0,
-              height: 300.0,
-              child: Container(
-                width: double.infinity,
-                height: 280,
-                alignment: Alignment.center,
-                child: CachedNetworkImage(
-                  fit: BoxFit.contain,
-                  imageUrl: widget.checkList!.imageUrl,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      LinearProgressIndicator(value: downloadProgress.progress),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                ),
+      body: ListView(
+        physics: const NeverScrollableScrollPhysics(),
+        // shrinkWrap: true,
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: 400.0,
+            height: 300.0,
+            child: Container(
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(15)),
+              width: double.infinity,
+              height: 280,
+              alignment: Alignment.center,
+              child: ClipRect(
+                child: PhotoView(
+                    basePosition: Alignment.center,
+                    maxScale: PhotoViewComputedScale.covered * 2.0,
+                    minScale: PhotoViewComputedScale.contained * 0.8,
+                    initialScale: PhotoViewComputedScale.covered,
+                    backgroundDecoration: const BoxDecoration(
+                        color: Color.fromARGB(256, 50, 50, 50)),
+                    imageProvider:
+                        CachedNetworkImageProvider(widget.checkList!.imageUrl)
+                    // CachedNetworkImage(
+                    //   fit: BoxFit.contain,
+                    //   imageUrl: widget.checkList!.imageUrl,
+                    //   progressIndicatorBuilder:
+                    //       (context, url, downloadProgress) =>
+                    //           LinearProgressIndicator(
+                    //               value: downloadProgress.progress),
+                    //   errorWidget: (context, url, error) =>
+                    //       const Icon(Icons.error),
+                    // ),
+                    ),
               ),
             ),
-            Column(
-              children: [
-                const SizedBox(height: 10.0),
-                const TextWidget(text: 'Tags'),
-                const SizedBox(height: 10.0),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: textWidgetList,
-                  ),
+          ),
+          Column(
+            children: [
+              const SizedBox(height: 10.0),
+              const TextWidget(text: 'Tags'),
+              const SizedBox(height: 10.0),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: textWidgetList,
                 ),
-                const SizedBox(height: 10.0),
-                const Divider(
-                  color: Colors.grey,
-                ),
-                const TextWidget(text: 'Quantity'),
-                const SizedBox(height: 5.0),
-                SizedBoxWidget(text: quantity),
-                const SizedBox(height: 10.0),
-                const TextWidget(text: 'Color'),
-                const SizedBox(height: 5.0),
-                SizedBoxWidget(text: color),
-                const SizedBox(height: 10.0),
-              ],
-            ),
-          ],
-        ),
+              ),
+              const SizedBox(height: 10.0),
+              const Divider(
+                color: Colors.grey,
+              ),
+              const TextWidget(text: 'Quantity'),
+              const SizedBox(height: 5.0),
+              SizedBoxWidget(text: quantity),
+              const SizedBox(height: 10.0),
+              const TextWidget(text: 'Color'),
+              const SizedBox(height: 5.0),
+              SizedBoxWidget(text: color),
+              const SizedBox(height: 10.0),
+            ],
+          ),
+        ],
       ),
     );
   }

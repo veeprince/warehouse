@@ -406,8 +406,9 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                               uploadToFirestore().then((value) async {
                                 await DishwareDatabaseHelper
                                     .updateDishwareChecklistImage(
-                                        quantity: quantityController.text,
-                                        color: colorController.text,
+                                        quantity:
+                                            quantityController.text.trim(),
+                                        color: colorController.text.trim(),
                                         locations: {
                                           for (var item
                                               in locationFieldController
@@ -434,8 +435,8 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                           for (var item in locationFieldController.getTags!)
                             item: true
                         },
-                        quantity: quantityController.text,
-                        color: colorController.text,
+                        quantity: quantityController.text.trim(),
+                        color: colorController.text.trim(),
                         imageUrl: downloadedURL,
                       );
                     });

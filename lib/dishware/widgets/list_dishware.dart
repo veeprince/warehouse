@@ -20,164 +20,176 @@ class ListDishwareItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: InkWell(
-          child: Container(
-            height: 150,
-            width: 100,
-            decoration: BoxDecoration(
-                color: const Color.fromARGB(31, 0, 0, 0),
-                borderRadius: BorderRadius.circular(15)),
-            child: Stack(alignment: const Alignment(0.6, 0), children: [
-              CachedNetworkImage(
-                height: 150,
-                fit: BoxFit.contain,
-                imageUrl: checkList.imageUrl,
-                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    LinearProgressIndicator(value: downloadProgress.progress),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
-              Align(
-                alignment: const Alignment(0, 0.95),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Text(
-                    "Quantity: ${checkList.quantity}",
-                    style: const TextStyle(
-                        fontSize: 13,
-                        color: Color.fromARGB(255, 255, 255, 255)),
+    return InkWell(
+        child: Container(
+          height: 150,
+          // width: 50,
+          decoration: BoxDecoration(
+              color: const Color.fromARGB(256, 50, 50, 50),
+              borderRadius: BorderRadius.circular(15)),
+          child: Stack(children: [
+            Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: CachedNetworkImage(
+                    height: 150,
+                    width: 165,
+                    fit: BoxFit.fitWidth,
+                    imageUrl: checkList.imageUrl,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) =>
+                            LinearProgressIndicator(
+                                value: downloadProgress.progress),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
                 ),
               ),
-            ]),
-          ),
-          // await showDialog(
-          //     context: context,
-          //     builder: (BuildContext context) {
-          //       return AlertDialog(
-          //         content: Text(
-          //             "Are you sure you want to delete ${checkList.name}?"),
-          //         actions: <Widget>[
-          //           ElevatedButton(
-          //             child: const Text(
-          //               "No",
-          //               style: TextStyle(color: Colors.black),
-          //             ),
-          //             onPressed: () {
-          //               Navigator.of(context).pop();
-          //             },
-          //           ),
-          //           ElevatedButton(
-          //             child: const Text(
-          //               "Yes",
-          //               style: TextStyle(color: Colors.black),
-          //             ),
-          //             onPressed: () async {
-          //               FirebaseFirestore.instance
-          //                   .collection("Dishware")
-          //                   .doc(docId)
-          //                   .get()
-          //                   .then((value) {
-          //                 imageId = value.data()!["imageUrl"];
-          //               }).whenComplete(() {
-          //                 if (imageId == null) {
-          //                   Timer.periodic(const Duration(microseconds: 1),
-          //                       (timer) {
-          //                     if (imageId != null) {
-          //                       timer.cancel();
-          //                       FirebaseStorage.instance
-          //                           .refFromURL(imageId)
-          //                           .delete();
-          //                       DishwareDatabaseHelper.deleteChecklist(
-          //                           docId: docId);
-          //                     }
-          //                   });
-          //                 } else if (imageId != null) {
-          //                   FirebaseStorage.instance
-          //                       .refFromURL(imageId)
-          //                       .delete();
-          //                   DishwareDatabaseHelper.deleteChecklist(
-          //                       docId: docId);
-          //                 }
-          //               });
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                "Quantity: ${checkList.quantity}",
+                style: const TextStyle(
+                    fontSize: 13, color: Color.fromARGB(255, 255, 255, 255)),
+              ),
+            ),
+            // const Divider(
+            //   endIndent: 18,
+            //   thickness: 2,
+            //   height: 1,
+            //   indent: 18,
+            // )
+          ]),
+        ),
+        // await showDialog(
+        //     context: context,
+        //     builder: (BuildContext context) {
+        //       return AlertDialog(
+        //         content: Text(
+        //             "Are you sure you want to delete ${checkList.name}?"),
+        //         actions: <Widget>[
+        //           ElevatedButton(
+        //             child: const Text(
+        //               "No",
+        //               style: TextStyle(color: Colors.black),
+        //             ),
+        //             onPressed: () {
+        //               Navigator.of(context).pop();
+        //             },
+        //           ),
+        //           ElevatedButton(
+        //             child: const Text(
+        //               "Yes",
+        //               style: TextStyle(color: Colors.black),
+        //             ),
+        //             onPressed: () async {
+        //               FirebaseFirestore.instance
+        //                   .collection("Dishware")
+        //                   .doc(docId)
+        //                   .get()
+        //                   .then((value) {
+        //                 imageId = value.data()!["imageUrl"];
+        //               }).whenComplete(() {
+        //                 if (imageId == null) {
+        //                   Timer.periodic(const Duration(microseconds: 1),
+        //                       (timer) {
+        //                     if (imageId != null) {
+        //                       timer.cancel();
+        //                       FirebaseStorage.instance
+        //                           .refFromURL(imageId)
+        //                           .delete();
+        //                       DishwareDatabaseHelper.deleteChecklist(
+        //                           docId: docId);
+        //                     }
+        //                   });
+        //                 } else if (imageId != null) {
+        //                   FirebaseStorage.instance
+        //                       .refFromURL(imageId)
+        //                       .delete();
+        //                   DishwareDatabaseHelper.deleteChecklist(
+        //                       docId: docId);
+        //                 }
+        //               });
 
-          //               Navigator.of(context).pop();
-          //             },
-          //           ),
-          //         ],
-          //       ),);
-          onDoubleTap: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: const Text("Do you want to Edit or Delete?"),
-                    actions: <Widget>[
-                      ElevatedButton(
-                        child: const Text(
-                          "Edit",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddDishwareScreen(
-                                        checkList: checkList,
-                                        docId: docId,
-                                      ))).then((value) => Navigator.of(context)
-                              .popUntil(ModalRoute.withName("/Page1")));
-                        },
+        //               Navigator.of(context).pop();
+        //             },
+        //           ),
+        //         ],
+        //       ),);
+        onDoubleTap: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: const Text("Do you want to Edit or Delete?"),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      child: const Text(
+                        "Edit",
+                        style: TextStyle(color: Colors.black),
                       ),
-                      ElevatedButton(
-                        child: const Text(
-                          "Delete",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        onPressed: () async {
-                          FirebaseFirestore.instance
-                              .collection("Dishware")
-                              .doc(docId)
-                              .get()
-                              .then((value) {
-                            imageId = value.data()!["imageUrl"];
-                          }).whenComplete(() {
-                            if (imageId == null) {
-                              Timer.periodic(const Duration(microseconds: 1),
-                                  (timer) {
-                                if (imageId != null) {
-                                  timer.cancel();
-                                  FirebaseStorage.instance
-                                      .refFromURL(imageId)
-                                      .delete();
-                                  DishwareDatabaseHelper.deleteChecklist(
-                                      docId: docId);
-                                }
-                              });
-                            } else if (imageId != null) {
-                              FirebaseStorage.instance
-                                  .refFromURL(imageId)
-                                  .delete();
-                              DishwareDatabaseHelper.deleteChecklist(
-                                  docId: docId);
-                            }
-                          });
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddDishwareScreen(
+                                      checkList: checkList,
+                                      docId: docId,
+                                    ))).then((value) => Navigator.of(context)
+                            .popUntil(ModalRoute.withName("/Page1")));
+                      },
+                    ),
+                    ElevatedButton(
+                      child: const Text(
+                        "Delete",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      onPressed: () async {
+                        FirebaseFirestore.instance
+                            .collection("Dishware")
+                            .doc(docId)
+                            .get()
+                            .then((value) {
+                          imageId = value.data()!["imageUrl"];
+                        }).whenComplete(() {
+                          if (imageId == null) {
+                            Timer.periodic(const Duration(microseconds: 1),
+                                (timer) {
+                              if (imageId != null) {
+                                timer.cancel();
+                                FirebaseStorage.instance
+                                    .refFromURL(imageId)
+                                    .delete();
+                                DishwareDatabaseHelper.deleteChecklist(
+                                    docId: docId);
+                              }
+                            });
+                          } else if (imageId != null) {
+                            FirebaseStorage.instance
+                                .refFromURL(imageId)
+                                .delete();
+                            DishwareDatabaseHelper.deleteChecklist(
+                                docId: docId);
+                          }
+                        });
 
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                });
-          },
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ViewDishwareScreen(
-                        checkList: checkList,
-                        docId: docId,
-                      )))),
-    );
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              });
+        },
+        onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ViewDishwareScreen(
+                      checkList: checkList,
+                      docId: docId,
+                    ))));
   }
 }

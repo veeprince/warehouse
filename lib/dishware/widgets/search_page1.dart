@@ -47,6 +47,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
     'Orange',
     'White',
     'Gold',
+    'Glass',
   ];
 
   String? selectedValue;
@@ -130,7 +131,20 @@ class _CustomSearchPageState extends State<CustomSearchPage>
           }));
     } else if (selectedValue == "Any" && searchString.isEmpty) {
       late Query<Map<String, dynamic>> color;
+
       color = firestoreCol.where("color");
+      color.get().then((QuerySnapshot querysnapshot) {
+        // print(querysnapshot.docs);
+        for (var doc in querysnapshot.docs) {
+          foundUsers.add(doc.data() as Map<String, dynamic>);
+        }
+      }).whenComplete(() => setState(() {
+            foundUsers;
+          }));
+    } else if (selectedValue!.isNotEmpty && searchString.isEmpty) {
+      late Query<Map<String, dynamic>> color;
+      color =
+          firestoreCol.where("color", isEqualTo: selectedValue!.toLowerCase());
       color.get().then((QuerySnapshot querysnapshot) {
         // print(querysnapshot.docs);
         for (var doc in querysnapshot.docs) {
