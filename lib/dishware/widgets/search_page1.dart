@@ -23,7 +23,9 @@ class _CustomSearchPageState extends State<CustomSearchPage>
       TextEditingController();
 
   var searchString = '';
+  var searchString2 = '';
   TextEditingController searchField = TextEditingController();
+  TextEditingController searchField2 = TextEditingController();
 
   TextEditingController textFieldController = TextEditingController();
   TextEditingController locationTextFieldController = TextEditingController();
@@ -35,7 +37,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
   List<List<String>> check = [];
   var productId = '';
   var docID = "";
-  final List<String> genderItems = [
+  final List<String> colorItems = [
     'Any',
     'Yellow',
     'Green',
@@ -48,6 +50,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
     'White',
     'Gold',
     'Glass',
+    'Wood'
   ];
 
   String? selectedValue;
@@ -77,7 +80,11 @@ class _CustomSearchPageState extends State<CustomSearchPage>
 
   void _runFilter(List<String> enteredKeyword) {
     // print(_allUsers);
+    String element1 = "";
+    String element2 = "";
+    String element3 = "";
     var firestoreCol = FirebaseFirestore.instance.collection("Dishware");
+    //check for a color other than any and searchField is not empty
     if (selectedValue != null &&
         selectedValue != "Any" &&
         searchField.text.isNotEmpty) {
@@ -87,12 +94,40 @@ class _CustomSearchPageState extends State<CustomSearchPage>
           firestoreCol.where("color", isEqualTo: selectedValue!.toLowerCase());
 
       color.get().then((QuerySnapshot querysnapshot) {
-        for (var element in enteredKeyword) {
-          // print(element);
-          dishes = color.where("tags.$element", isEqualTo: true);
+        for (int i = 0; i < enteredKeyword.length; i++) {
+          if (enteredKeyword.asMap().containsKey(0)) {
+            element1 = enteredKeyword.elementAt(0);
+          }
+          if (enteredKeyword.asMap().containsKey(1)) {
+            element2 = enteredKeyword.elementAt(1);
+          }
+          if (enteredKeyword.asMap().containsKey(2)) {
+            element3 = enteredKeyword.elementAt(2);
+          }
 
           // print(cities.runtimeType);
+
         }
+        if (element1.isNotEmpty && element2.isEmpty && element3.isEmpty) {
+          dishes = color.where("tags.$element1", isEqualTo: true);
+        } else if (element1.isNotEmpty &&
+            element2.isNotEmpty &&
+            element3.isEmpty) {
+          dishes = color
+              .where("tags.$element1", isEqualTo: true)
+              .where("tags.$element2", isEqualTo: true);
+        } else if (element1.isNotEmpty &&
+            element2.isNotEmpty &&
+            element3.isNotEmpty) {
+          dishes = color
+              .where("tags.$element1", isEqualTo: true)
+              .where("tags.$element2", isEqualTo: true)
+              .where("tags.$element3", isEqualTo: true);
+        }
+        // dishes = color
+        //     .where("tags.$element1", isEqualTo: true)
+        //     .where("tags.$element2", isEqualTo: true)
+        //     .where("tags.$element3", isEqualTo: true);
         dishes.get().then((QuerySnapshot querysnapshot) {
           // print(querysnapshot.docs.hashCode);
           // print(querysnapshot.docs);
@@ -101,23 +136,63 @@ class _CustomSearchPageState extends State<CustomSearchPage>
             // foundUsers.contains(doc)
             // print(doc.data().runtimeType);
           }
-        }).whenComplete(() => setState(() {
-              // print(foundUsers.toSet());
-              foundUsers;
-            }));
-        // print(querysnapshot.docs);
-        // for (var doc in querysnapshot.docs) {
-        //   print(doc.data());
-        // }
+        }).whenComplete(() => {
+                  setState(() {
+                    foundUsers;
+                  })
+                }
+
+            // setState(() {
+            // print(foundUsers);
+            // foundUsers;
+            //   if (searchField2.text.isEmpty) {
+            //   return;
+            // } else {
+            //   print(foundUsers);
+            // }
+            // print(querysnapshot.docs);
+            // for (var doc in querysnapshot.docs) {
+            //   print(doc.data());
+            // }
+            // })
+
+            );
       });
+      //Check for colors with any with a word in the textfield
     } else if (selectedValue == "Any" && searchString.isNotEmpty) {
       late Query<Map<String, dynamic>> dishes;
       late Query<Map<String, dynamic>> color;
       color = firestoreCol.where("color");
-      for (var element in enteredKeyword) {
-        // print(element);
-        dishes = color.where("tags.$element", isEqualTo: true);
+      for (int i = 0; i < enteredKeyword.length; i++) {
+        if (enteredKeyword.asMap().containsKey(0)) {
+          element1 = enteredKeyword.elementAt(0);
+        }
+        if (enteredKeyword.asMap().containsKey(1)) {
+          element2 = enteredKeyword.elementAt(1);
+        }
+        if (enteredKeyword.asMap().containsKey(2)) {
+          element3 = enteredKeyword.elementAt(2);
+        }
+
         // print(cities.runtimeType);
+
+      }
+
+      if (element1.isNotEmpty && element2.isEmpty && element3.isEmpty) {
+        dishes = color.where("tags.$element1", isEqualTo: true);
+      } else if (element1.isNotEmpty &&
+          element2.isNotEmpty &&
+          element3.isEmpty) {
+        dishes = color
+            .where("tags.$element1", isEqualTo: true)
+            .where("tags.$element2", isEqualTo: true);
+      } else if (element1.isNotEmpty &&
+          element2.isNotEmpty &&
+          element3.isNotEmpty) {
+        dishes = color
+            .where("tags.$element1", isEqualTo: true)
+            .where("tags.$element2", isEqualTo: true)
+            .where("tags.$element3", isEqualTo: true);
       }
 
       dishes.get().then((QuerySnapshot querysnapshot) {
@@ -129,6 +204,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
       }).whenComplete(() => setState(() {
             foundUsers;
           }));
+      //return all dishware in collection
     } else if (selectedValue == "Any" && searchString.isEmpty) {
       late Query<Map<String, dynamic>> color;
 
@@ -141,6 +217,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
       }).whenComplete(() => setState(() {
             foundUsers;
           }));
+      //return where color is selected but no input data in searchfield
     } else if (selectedValue!.isNotEmpty && searchString.isEmpty) {
       late Query<Map<String, dynamic>> color;
       color =
@@ -153,7 +230,9 @@ class _CustomSearchPageState extends State<CustomSearchPage>
       }).whenComplete(() => setState(() {
             foundUsers;
           }));
-    } else {
+    }
+    //require a color
+    else {
       foundUsers = [];
 
       ScaffoldMessenger.of(context).showSnackBar(snackbarRenderer("Oh snap",
@@ -173,6 +252,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // toolbarHeight: 120,
         title: Center(
           child: Container(
             // height: 49,
@@ -189,20 +269,16 @@ class _CustomSearchPageState extends State<CustomSearchPage>
                     // prefixIcon: Icon(Icons.search),
                     suffixIcon: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
-                      child: SizedBox(
-                        width: 20,
-                        height: 5,
-                        child: IconButton(
-                            splashColor: Colors.grey,
-                            splashRadius: 30,
-                            onPressed: () {
-                              searchString = searchField.text;
+                      child: IconButton(
+                          splashColor: Colors.grey,
+                          splashRadius: 30,
+                          onPressed: () {
+                            searchString = searchField.text;
 
-                              _runFilter(searchString.split(" "));
-                              foundUsers = [];
-                            },
-                            icon: const Icon(Icons.search_sharp)),
-                      ),
+                            _runFilter(searchString.split(" "));
+                            foundUsers = [];
+                          },
+                          icon: const Icon(Icons.search_sharp)),
                     ),
                     prefixIcon: Form(
                       key: _formKey,
@@ -226,7 +302,7 @@ class _CustomSearchPageState extends State<CustomSearchPage>
                                 ),
                                 isExpanded: true,
 
-                                items: genderItems
+                                items: colorItems
                                     .map((item) => DropdownMenuItem<String>(
                                           value: item,
                                           child: Text(

@@ -33,8 +33,8 @@ class _TagWidgetState extends State<TagWidget> {
     return TextFieldTags(
       initialTags: widget.tagGetter,
       textfieldTagsController: widget.textFieldController,
-      textSeparators: const [' ', ','],
-      letterCase: LetterCase.normal,
+      textSeparators: const [','],
+      letterCase: LetterCase.small,
       inputfieldBuilder: (context, tec, fn, error, onChanged, onSubmitted) {
         return ((context, sc, tags, onTagDelete) {
           return Padding(

@@ -38,6 +38,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
   List<String> locationGetter = [];
   List<String> tagGetter = [];
   late String docId;
+
   @override
   void initState() {
     if (widget.checkList != null) {
@@ -132,7 +133,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
             clipBehavior: Clip.none,
             color: Colors.grey,
             child: Ink.image(
-              image: _image == null
+              image: (_image == null)
                   ? const AssetImage('assets/images/568165.png')
                   : FileImage(_image) as ImageProvider,
               fit: BoxFit.cover,
@@ -408,7 +409,9 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                                     .updateDishwareChecklistImage(
                                         quantity:
                                             quantityController.text.trim(),
-                                        color: colorController.text.trim(),
+                                        color: colorController.text
+                                            .trim()
+                                            .toLowerCase(),
                                         locations: {
                                           for (var item
                                               in locationFieldController
@@ -436,7 +439,7 @@ class AddDishwareScreenState extends State<AddDishwareScreen> {
                             item: true
                         },
                         quantity: quantityController.text.trim(),
-                        color: colorController.text.trim(),
+                        color: colorController.text.trim().toLowerCase(),
                         imageUrl: downloadedURL,
                       );
                     });

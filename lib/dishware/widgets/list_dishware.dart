@@ -141,7 +141,10 @@ class _ListDishwareItemState extends State<ListDishwareItem>
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  content: const Text("Do you want to Edit or Delete?"),
+                  content: const Text(
+                    "What would you like to do?",
+                    textAlign: TextAlign.center,
+                  ),
                   actions: <Widget>[
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

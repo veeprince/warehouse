@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,6 +30,7 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
   List<Widget> textWidgetList = <Widget>[]; // Here we defined a list of widget!
   late Map<String, dynamic> locations;
   List<Widget> locationWidgetList = <Widget>[];
+  var recase = RegExp(r'\b\w');
   @override
   void initState() {
     if (widget.checkList != null) {
@@ -49,9 +49,10 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
     //   //   print('index=$i, value=$value');
     //   // });
     // }
+
     locationWidgetList.add(
       Text(
-        "${locations.keys.join(", ")}  ",
+        "${locations.keys.join(" ").replaceAllMapped(recase, (match) => match.group(0)!.toUpperCase())}  ",
         textAlign: TextAlign.center,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
@@ -64,8 +65,12 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
     );
     textWidgetList.add(
       SelectableText(
-        "${tags.keys.join(", ")}  ",
+        "${tags.keys.join(" ")
+        // .replaceAllMapped(recase, (match) => match.group(0)!.toUpperCase())
+        }  ",
+
         textAlign: TextAlign.center,
+
         // overflow: TextOverflow.ellipsis,
         maxLines: 1,
         style: GoogleFonts.aBeeZee(
@@ -148,7 +153,9 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
               const SizedBox(height: 10.0),
               const TextWidget(text: 'Color'),
               const SizedBox(height: 5.0),
-              SizedBoxWidget(text: color),
+              SizedBoxWidget(text: color
+                  // .capitalize()
+                  ),
               const SizedBox(height: 10.0),
             ],
           ),
