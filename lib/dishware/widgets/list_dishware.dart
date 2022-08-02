@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:warehouse/dishware/models/dishware_checklist_model.dart';
 import 'package:warehouse/dishware/screens/add_dishware_screen.dart';
 import 'package:warehouse/dishware/screens/view_dishware_screen.dart';
-import 'package:warehouse/dishware/widgets/search_page1.dart';
 import 'package:warehouse/functions.dart';
 import '../models/dishware_database_helper.dart';
 

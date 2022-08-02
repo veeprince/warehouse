@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:warehouse/common_widgets/sizedbox_widget.dart';
 import 'package:warehouse/common_widgets/text_widget.dart';
+import 'package:warehouse/functions/extension.dart';
 import '../models/dishware_checklist_model.dart';
 
 class ViewDishwareScreen extends StatefulWidget {
@@ -65,9 +66,7 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
     );
     textWidgetList.add(
       SelectableText(
-        "${tags.keys.join(" ")
-        // .replaceAllMapped(recase, (match) => match.group(0)!.toUpperCase())
-        }  ",
+        "${tags.keys.join(" ").replaceAllMapped(recase, (match) => match.group(0)!.toUpperCase())}  ",
 
         textAlign: TextAlign.center,
 
@@ -153,9 +152,7 @@ class _ViewDishwareScreenState extends State<ViewDishwareScreen> {
               const SizedBox(height: 10.0),
               const TextWidget(text: 'Color'),
               const SizedBox(height: 5.0),
-              SizedBoxWidget(text: color
-                  // .capitalize()
-                  ),
+              SizedBoxWidget(text: color.capitalize()),
               const SizedBox(height: 10.0),
             ],
           ),

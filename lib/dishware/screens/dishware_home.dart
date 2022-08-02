@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:warehouse/blocs/auth_block.dart';
 import 'package:warehouse/common_widgets/app_bar.dart';
 import 'package:warehouse/dishware/screens/add_dishware_screen.dart';
 import 'package:warehouse/dishware/widgets/list_dishware.dart';
 import 'package:warehouse/dishware/widgets/search_firebase.dart';
 import '../models/dishware_checklist_model.dart';
 import '../models/dishware_database_helper.dart';
+import 'package:warehouse/functions.dart';
 
 class DishwareHomePage extends StatefulWidget {
   const DishwareHomePage({Key? key}) : super(key: key);
@@ -16,8 +19,27 @@ class DishwareHomePage extends StatefulWidget {
 }
 
 class DishwareHomePageState extends State<DishwareHomePage>
-    with SingleTickerProviderStateMixin {
-  void getUrl() async {}
+    with SingleTickerProviderStateMixin, DishFunctions {
+  String userEmail = "";
+  bool visibilityToggle = false;
+  @override
+  initState() {
+    final authBloc = Provider.of<AuthBloc>(context, listen: false);
+
+    authBloc.currentUser.listen((event) {
+      userEmail = event!.email!;
+      if (userList.contains(userEmail)) {
+        setState(() {
+          visibilityToggle = true;
+        });
+      } else {
+        setState(() {
+          visibilityToggle = false;
+        });
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +58,16 @@ class DishwareHomePageState extends State<DishwareHomePage>
           leading: const CustomAppBarWidget(),
           actions: <Widget>[
             const SearchFirebase(),
-            IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const AddDishwareScreen(),
-                  ));
-                },
-                icon: const Icon(Icons.add)),
+            Visibility(
+              visible: visibilityToggle,
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const AddDishwareScreen(),
+                    ));
+                  },
+                  icon: const Icon(Icons.add)),
+            )
           ],
         ),
         body: DelayedDisplay(

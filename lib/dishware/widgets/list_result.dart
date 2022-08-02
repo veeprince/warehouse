@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:warehouse/dishware/models/dishware_checklist_model.dart';
 import 'package:warehouse/dishware/screens/view_dishware_screen.dart';
 
-class SearchPageList extends StatelessWidget {
+class ViewButton extends StatelessWidget {
   final DishwareCheckList checkList;
   final String docId;
-  const SearchPageList(this.checkList, this.docId, {Key? key})
-      : super(key: key);
+  const ViewButton(this.checkList, this.docId, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +19,7 @@ class SearchPageList extends StatelessWidget {
                   builder: (context) => ViewDishwareScreen(
                         checkList: checkList,
                         docId: docId,
-                      )));
+                      ))).whenComplete(() => Navigator.of(context).pop());
         });
   }
 }

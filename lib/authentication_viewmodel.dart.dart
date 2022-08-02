@@ -56,8 +56,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 onPressed: () => authBloc.signInwithGoogle(),
               ),
               const SizedBox(
-                height: 205,
+                height: 220,
               ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 15.0),
+                child: Text("Made by Vee"),
+              )
             ],
           ),
         ),
